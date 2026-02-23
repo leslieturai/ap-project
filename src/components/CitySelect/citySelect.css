@@ -36,3 +36,28 @@
     border: none;
     margin-top: 2%;
 }
+#citySelectSection {
+  width: 40%;
+  margin: 10% auto 0;
+  padding: 1rem;
+  border-radius: 1rem;
+  background: grey;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+#citySelectSection select,
+#citySelectSection button {
+  width: 75%;
+  padding: 0.8rem;
+  border-radius: 1rem;
+  border: none;
+}
+
+.city-hint {
+  width: 75%;
+  font-size: 0.95rem;
+  opacity: 0.9;
+}

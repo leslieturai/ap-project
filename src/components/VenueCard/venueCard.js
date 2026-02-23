@@ -1,21 +1,32 @@
+import "./venueCard.css";
+import { Link } from "react-router-dom";
 
-import "./venueCard.css"
+export default function VenueCard({ venue }) {
+  // fallback so it doesn't crash if venue is missing
+  const v = venue || {};
 
-import { Link } from "react-router"
+  return (
+    <section className="venueCard">
+      <p>Img</p>
 
-export default function VenueCard (props) {
+      <p className="venueName">
+        {/* Using doc id for details route */}
+        <Link to={`/details/${v.id || ""}`}>{v.name || "Unknown venue"}</Link>
+      </p>
 
-    return (
-        <>
-            <section className="venueCard">
-                <p>Img</p>
-                <p className="venueName"><Link to="/details" >Phil's Bar & Burders</Link></p>
-                <div className="venueRankings">
-                    <p className="frequencyStatus">Not too busy</p>
-                    <p className="venueCost">$</p>
-                    <p className="venueScore">4.3</p>
-                </div>
-            </section>
-        </>
-    )
+      <div className="venueRankings">
+        {/* Simple status based on flags (you can improve later) */}
+        <p className="frequencyStatus">
+          {v.hasEvents ? "Events" : "No events"}
+        </p>
+
+        <p className="venueCost">{v.priceLevel || "$"}</p>
+
+        <p className="venueScore">{v.rating || "—"}</p>
+      </div>
+
+      {/* Optional: show address */}
+      {v.address && <p style={{ marginTop: 6 }}>{v.address}</p>}
+    </section>
+  );
 }
