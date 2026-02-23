@@ -7,13 +7,13 @@ import { db } from "../../firebase";
 import { doc, getDoc } from "firebase/firestore";
 
 // Uncomment when enabling Google Maps
-import {
-  APIProvider,
-  Map,
-  AdvancedMarker,
-  Pin,
-  InfoWindow,
-} from "@vis.gl/react-google-maps";
+// import {
+//   APIProvider,
+//   Map,
+//   AdvancedMarker,
+//   Pin,
+//   InfoWindow,
+// } from "@vis.gl/react-google-maps";
 
 export default function Details() {
   const { id } = useParams();
@@ -24,7 +24,7 @@ export default function Details() {
   const [err, setErr] = useState("");
 
   // For Google Maps popup (uncomment when enabling map)
-  const [open, setOpen] = useState(false);
+  // const [open, setOpen] = useState(false);
 
   useEffect(() => {
     async function loadVenue() {
@@ -108,11 +108,21 @@ export default function Details() {
               <h2>Location</h2>
               <p>{venue?.address || "Address not provided."}</p>
 
-              <APIProvider apiKey={process.env.REACT_APP_MAPS_KEY}>
+              {/* 
+                Uncomment this entire block when enabling Google Maps.
+                Remember:
+                1) npm install @vis.gl/react-google-maps
+                2) uncomment imports at top
+                3) uncomment open/setOpen state
+                4) add API key below
+              */}
+
+              {/*
+              <APIProvider apiKey="YOUR_GOOGLE_MAPS_KEY">
                 <Map
                   defaultZoom={13}
                   defaultCenter={{ lat: 51.0447, lng: -114.0719 }} // Calgary
-                  style={{ width: "100%", height: "350px", borderRadius: "12px" }}
+                  mapId="YOUR_MAP_ID"
                 >
                   <AdvancedMarker
                     position={{ lat: 51.0447, lng: -114.0719 }}
@@ -131,9 +141,10 @@ export default function Details() {
                   )}
                 </Map>
               </APIProvider>
+              */}
 
-          <hr />
-        </section>
+              <hr />
+            </section>
           </>
         )}
       </section>
