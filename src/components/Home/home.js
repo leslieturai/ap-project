@@ -1,105 +1,159 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Header from "../Header/Header";
 import VenueCard from "../VenueCard/venueCard";
-import { seedCalgaryRestaurants } from "../../seed/seedCalgaryRestaurants";
-
 import "./home.css";
+
 import "../baseStyles.css";
 
-import { auth, db } from "../../firebase";
-import { onAuthStateChanged } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
+import { db } from "../../firebase";
 import { collection, getDocs, query, where } from "firebase/firestore";
 
+// import { seedCalgaryRestaurants } from "../../seed/seedCalgaryRestaurants";
+
 export default function Home() {
+  const [venues, setVenues] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [cityId, setCityId] = useState("calgary"); // default
-  const [restaurants, setRestaurants] = useState([]);
   const [err, setErr] = useState("");
 
-  // 1) Find user's selected city from Firestore (defaults to Calgary)
+  const [search, setSearch] = useState("");
+  const [filterHappyHour, setFilterHappyHour] = useState(false);
+  const [filterDailySpecials, setFilterDailySpecials] = useState(false);
+  const [filterEvents, setFilterEvents] = useState(false);
+
+  async function loadCalgaryRestaurants() {
+    setErr("");
+    setLoading(true);
+
+    try {
+      const q = query(
+        collection(db, "restaurants"),
+        where("cityId", "==", "calgary")
+      );
+
+      const snap = await getDocs(q);
+      const data = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+      setVenues(data);
+    } catch (e) {
+      setErr(e?.message || "Failed to load restaurants.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  // Run once on page load
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, async (user) => {
-      try {
-        if (!user) {
-          // If not logged in, still allow browsing Calgary-only demo
-          setCityId("calgary");
-          setLoading(false);
-          return;
-        }
-
-        const userSnap = await getDoc(doc(db, "users", user.uid));
-        const data = userSnap.exists() ? userSnap.data() : null;
-        setCityId(data?.cityId || "calgary");
-      } catch (e) {
-        setErr(e?.message || "Failed to load user city.");
-        setCityId("calgary");
-      } finally {
-        setLoading(false);
-      }
-    });
-
-    return () => unsub();
+    loadCalgaryRestaurants();
   }, []);
 
-  // 2) Load restaurants for that city
-  useEffect(() => {
-    async function loadRestaurants() {
-      setErr("");
-      try {
-        const qRef = query(
-          collection(db, "restaurants"),
-          where("cityId", "==", cityId)
-        );
-        const snap = await getDocs(qRef);
+  // async function handleSeed() {
+  //   setErr("");
+  //   setLoading(true);
 
-        const rows = snap.docs.map((d) => ({
-          id: d.id,
-          ...d.data(),
-        }));
+  //   try {
+  //     const count = await seedCalgaryRestaurants();
+  //     console.log("Seeded:", count);
 
-        setRestaurants(rows);
-      } catch (e) {
-        setErr(e?.message || "Failed to load restaurants.");
-      }
-    }
+  //     // reload restaurants after seeding
+  //     await loadCalgaryRestaurants();
+  //   } catch (e) {
+  //     setErr(e?.message || "Seeding failed.");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // }
 
-    // only run after auth/city load finishes
-    if (!loading) loadRestaurants();
-  }, [cityId, loading]);
+  const filtered = useMemo(() => {
+    const s = search.trim().toLowerCase();
 
-  async function handleSeed() {
-    setErr("");
-    try {
-      const count = await seedCalgaryRestaurants();
-      alert(`Seeded ${count} Calgary restaurants`);
-      // reload list after seeding
-      setCityId("calgary");
-    } catch (e) {
-      setErr(e?.message || "Seeding failed. Check Firestore rules.");
-    }
+    return venues.filter((v) => {
+      // search by name
+      if (s && !(v.name || "").toLowerCase().includes(s)) return false;
+
+      // filters
+      if (filterHappyHour && !v.hasHappyHour) return false;
+      if (filterDailySpecials && !v.hasDailySpecials) return false;
+      if (filterEvents && !v.hasEvents) return false;
+
+      return true;
+    });
+  }, [venues, search, filterHappyHour, filterDailySpecials, filterEvents]);
+
+  function clearFilters() {
+    setSearch("");
+    setFilterHappyHour(false);
+    setFilterDailySpecials(false);
+    setFilterEvents(false);
   }
 
   return (
     <>
       <Header />
+
       <section id="homeSection">
-        <h1>Popular Bars in {cityId === "calgary" ? "Calgary" : cityId}</h1>
+        <h1>Calgary Restaurants</h1>
 
-        {/* DEV ONLY: seed button (remove later) */}
-        <button onClick={handleSeed}>Seed Calgary Data (DEV)</button>
+        {/* TEMP BUTTON: Click once to seed Firestore
+        <button
+          type="button"
+          className="filterBtn"
+          onClick={handleSeed}
+          disabled={loading}
+          style={{ marginBottom: "1rem" }}
+        >
+          {loading ? "Working..." : "Seed Calgary Restaurants"}
+        </button> */}
 
-        {err && <p style={{ color: "crimson" }}>{err}</p>}
+        <div className="filterRow">
+          <input
+            className="searchInput"
+            type="text"
+            placeholder="Search restaurants..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+
+          <button
+            type="button"
+            className={filterHappyHour ? "filterBtn active" : "filterBtn"}
+            onClick={() => setFilterHappyHour((p) => !p)}
+          >
+            Happy Hour
+          </button>
+
+          <button
+            type="button"
+            className={filterDailySpecials ? "filterBtn active" : "filterBtn"}
+            onClick={() => setFilterDailySpecials((p) => !p)}
+          >
+            Daily Specials
+          </button>
+
+          <button
+            type="button"
+            className={filterEvents ? "filterBtn active" : "filterBtn"}
+            onClick={() => setFilterEvents((p) => !p)}
+          >
+            Events
+          </button>
+
+          <button type="button" className="filterBtn" onClick={clearFilters}>
+            Clear
+          </button>
+        </div>
 
         {loading ? (
           <p>Loading...</p>
-        ) : restaurants.length === 0 ? (
-          <p>No restaurants found for this city yet.</p>
+        ) : err ? (
+          <p className="errorText">{err}</p>
+        ) : filtered.length === 0 ? (
+          <p>No restaurants match your search/filters.</p>
         ) : (
-          restaurants.map((r) => <VenueCard key={r.id} venue={r} />)
+          <div className="venueList">
+            {filtered.map((v) => (
+              <VenueCard key={v.id} venue={v} />
+            ))}
+          </div>
         )}
-
-        
       </section>
     </>
   );

@@ -1,57 +1,42 @@
-
-
-hr {
-    height: 0.1rem;
-    background-color: black;
-    border: none;
-    width: 100%;
-
-    margin-top: 2%;
-    margin-bottom: 2%;
+#ownerDetailSection {
+  width: 70%;
+  margin: 2rem auto;
 }
 
-#detailSection {
-    display: flex;
-    flex-direction: column;
-    gap: 2%;
-    width: 80%;
-    height: 90vh;
-    margin: auto;
+.ownerForm {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
-#detailSection > h1 {
-    margin-top: 2%;
-} 
-
-#detailSection > section {
-    /* border: 1px solid black; */
-    width: 100%;
+.ownerForm input,
+.ownerForm textarea,
+.ownerForm select {
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  border: 1px solid #ccc;
 }
 
-
-.venueRankings {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+.ownerForm textarea {
+  min-height: 100px;
 }
 
-.venueName a {
-    font-weight: 600;
-    font-size: 1.1rem;
-    color: black;
+.checkboxGroup {
+  margin-top: 1rem;
+  display: flex;
+  gap: 1.5rem;
 }
 
-.venueCost {
-    color: #1F9D05;
+.buttonRow {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
 }
 
-.venueScore {
-    color: #FFE100;
+.errorText {
+  color: crimson;
 }
 
-#eventsSection {
-    display: flex;
-    flex-direction: column;
-    gap: 2%;
-    align-items: start;
+.successText {
+  color: green;
 }

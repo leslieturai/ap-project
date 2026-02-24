@@ -6,14 +6,7 @@ import "./details.css";
 import { db } from "../../firebase";
 import { doc, getDoc } from "firebase/firestore";
 
-// Uncomment when enabling Google Maps
-// import {
-//   APIProvider,
-//   Map,
-//   AdvancedMarker,
-//   Pin,
-//   InfoWindow,
-// } from "@vis.gl/react-google-maps";
+
 
 export default function Details() {
   const { id } = useParams();
@@ -22,9 +15,6 @@ export default function Details() {
   const [venue, setVenue] = useState(null);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState("");
-
-  // For Google Maps popup (uncomment when enabling map)
-  // const [open, setOpen] = useState(false);
 
   useEffect(() => {
     async function loadVenue() {
@@ -39,6 +29,7 @@ export default function Details() {
         }
 
         const snap = await getDoc(doc(db, "restaurants", id));
+
         if (!snap.exists()) {
           setErr("Restaurant not found.");
           setVenue(null);
@@ -67,82 +58,63 @@ export default function Details() {
         ) : err ? (
           <section>
             <p className="errorText">{err}</p>
-            <button className="backBtn" onClick={() => navigate("/")}>
+            <button className="backBtn" type="button" onClick={() => navigate("/")}>
               Back to Home
             </button>
           </section>
         ) : (
           <>
-            <h1>{venue?.name}</h1>
+            {/* Title */}
+            <h1>{venue?.name || "Restaurant"}</h1>
 
-            <section id="imageSection">
-              <p>Images here</p>
-            </section>
-
-            <section className="venueRankings">
-              <p className="frequencyStatus">
-                {venue?.hasEvents ? "Events" : "No events"}
-              </p>
-              <p className="venueCost">{venue?.priceLevel || "$"}</p>
-              <p className="venueScore">{venue?.rating || "—"}</p>
-            </section>
-
+            {/* Address */}
             <section id="venueDesc">
-              <h2>About</h2>
-              <p>{venue?.about || "No description yet."}</p>
-              {venue?.address && (
-                <p>
-                  <strong>Address:</strong> {venue.address}
-                </p>
-              )}
+              <h2>Address</h2>
+              <p>{venue?.address || "Address not provided."}</p>
             </section>
 
             <section id="offersSection">
               <hr />
-              <h2>Food & Drink Offered</h2>
-              <p>{venue?.offers || "No offers listed yet."}</p>
+              <h2>What’s Available</h2>
+
+              <ul style={{ marginTop: "0.5rem" }}>
+                {venue?.hasHappyHour ? <li>Happy Hour</li> : <li>No Happy Hour listed</li>}
+                {venue?.hasDailySpecials ? <li>Daily Specials</li> : <li>No Daily Specials listed</li>}
+                {venue?.hasEvents ? <li>Events</li> : <li>No Events listed</li>}
+              </ul>
+
               <hr />
             </section>
+
+            {(venue?.about || venue?.offers || venue?.rating || venue?.priceLevel) && (
+              <section>
+                <h2>More Info</h2>
+                {venue?.about && (
+                  <p>
+                    <strong>About:</strong> {venue.about}
+                  </p>
+                )}
+                {venue?.offers && (
+                  <p>
+                    <strong>Offers:</strong> {venue.offers}
+                  </p>
+                )}
+                {venue?.rating && (
+                  <p>
+                    <strong>Rating:</strong> {venue.rating}
+                  </p>
+                )}
+                {venue?.priceLevel && (
+                  <p>
+                    <strong>Price:</strong> {venue.priceLevel}
+                  </p>
+                )}
+              </section>
+            )}
 
             <section id="mapSection">
               <h2>Location</h2>
               <p>{venue?.address || "Address not provided."}</p>
-
-              {/* 
-                Uncomment this entire block when enabling Google Maps.
-                Remember:
-                1) npm install @vis.gl/react-google-maps
-                2) uncomment imports at top
-                3) uncomment open/setOpen state
-                4) add API key below
-              */}
-
-              {/*
-              <APIProvider apiKey="YOUR_GOOGLE_MAPS_KEY">
-                <Map
-                  defaultZoom={13}
-                  defaultCenter={{ lat: 51.0447, lng: -114.0719 }} // Calgary
-                  mapId="YOUR_MAP_ID"
-                >
-                  <AdvancedMarker
-                    position={{ lat: 51.0447, lng: -114.0719 }}
-                    onClick={() => setOpen(true)}
-                  >
-                    <Pin />
-                  </AdvancedMarker>
-
-                  {open && (
-                    <InfoWindow
-                      position={{ lat: 51.0447, lng: -114.0719 }}
-                      onCloseClick={() => setOpen(false)}
-                    >
-                      <p>{venue?.name}</p>
-                    </InfoWindow>
-                  )}
-                </Map>
-              </APIProvider>
-              */}
-
               <hr />
             </section>
           </>

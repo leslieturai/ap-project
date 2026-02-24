@@ -5,3 +5,43 @@
     margin: auto;
     margin-top: 2%;
 }
+.venueGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+.filterRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  margin: 1rem 0;
+}
+
+.searchInput {
+  padding: 0.6rem;
+  border-radius: 0.75rem;
+  border: 1px solid #ccc;
+  min-width: 220px;
+}
+
+.filterBtn {
+  padding: 0.55rem 0.8rem;
+  border-radius: 0.75rem;
+  border: none;
+  cursor: pointer;
+  background: rgb(182, 182, 182);
+  font-weight: bold;
+}
+
+.filterBtn.active {
+  background: black;
+  color: white;
+}
+
+.venueList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}

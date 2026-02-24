@@ -1,21 +1,38 @@
+import { Link } from "react-router-dom";
+import "./venueCard.css";
 
-import "./venueCard.css"
+export default function OwnerVenueCard({ restaurant, onEdit }) {
+  if (!restaurant) return null;
 
-import { Link } from "react-router"
+  return (
+    <section className="venueCard">
+      <p>Img</p>
 
-export default function OwnerVenueCard (props) {
+      <p className="venueName">
+        <Link to={`/details/${restaurant.id}`}>{restaurant.name}</Link>
+      </p>
 
-    return (
-        <>
-            <section className="venueCard">
-                <p>Img</p>
-                <p className="venueName"><Link to="/owner-details" >Phil's Bar & Burders</Link></p>
-                <div className="venueRankings">
-                    <p className="frequencyStatus">Not too busy</p>
-                    <p className="venueCost">$</p>
-                    <p className="venueScore">4.3</p>
-                </div>
-            </section>
-        </>
-    )
+      <p className="venueAddress">{restaurant.address}</p>
+
+      <div className="venueRankings">
+        <p className="frequencyStatus">
+          {restaurant.hasEvents ? "Has Events" : "No Events"}
+        </p>
+        <p className="venueCost">{restaurant.priceLevel || "$"}</p>
+        <p className="venueScore">
+          {typeof restaurant.rating === "number" ? restaurant.rating : "—"}
+        </p>
+      </div>
+
+      <div style={{ display: "flex", gap: "0.5rem", marginTop: "0.75rem" }}>
+        <Link to={`/details/${restaurant.id}`}>
+          <button type="button">View</button>
+        </Link>
+
+        <button type="button" onClick={() => onEdit?.(restaurant.id)}>
+          Edit
+        </button>
+      </div>
+    </section>
+  );
 }
