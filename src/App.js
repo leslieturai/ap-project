@@ -7,7 +7,7 @@ import CitySelect from './components/CitySelect/citySelect.js';
 import OwnerPage from './components/OwnerPage/ownerPage.js';
 import OwnerDetails from './components/OwnerDetails/OwnerDetails.js';
 
-/* import { APIProvider } from "@vis.gl/react-google-maps" */
+import { APIProvider } from "@vis.gl/react-google-maps" 
 
 
 
