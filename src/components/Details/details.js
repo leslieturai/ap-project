@@ -6,6 +6,9 @@ import "./details.css";
 import { db } from "../../firebase";
 import { doc, getDoc } from "firebase/firestore";
 
+import {APIProvider, Map, AdvancedMarker, Pin, InfoWindow } from "@vis.gl/react-google-maps"
+import MapMarker from "../MapMarker/mapMarker";
+
 
 
 export default function Details() {
@@ -46,7 +49,22 @@ export default function Details() {
     }
 
     loadVenue();
+
   }, [id]);
+
+
+      /* Generate random busyness */
+    function busyAtRandom(min, max) {
+        let tempNum = Math.floor(Math.random() * (max - min) ) + min;
+        if (tempNum === 1) {
+            return "Empty"
+        } if (tempNum === 2) {
+            return "Not too busy"
+        } if (tempNum === 3) {
+            return "Packed"
+        }
+    }
+
 
   return (
     <>
@@ -68,10 +86,9 @@ export default function Details() {
             <h1>{venue?.name || "Restaurant"}</h1>
 
             {/* Address */}
-            <section id="venueDesc">
-              <h2>Address</h2>
-              <p>{venue?.address || "Address not provided."}</p>
-            </section>
+{/*             <section id="venueDesc">
+              
+            </section> */}
 
             <section id="offersSection">
               <hr />
@@ -92,6 +109,7 @@ export default function Details() {
                 {venue?.about && (
                   <p>
                     <strong>About:</strong> {venue.about}
+                    
                   </p>
                 )}
                 {venue?.offers && (
@@ -106,16 +124,29 @@ export default function Details() {
                 )}
                 {venue?.priceLevel && (
                   <p>
-                    <strong>Price:</strong> {venue.priceLevel}
+                    <strong>Price:</strong> <strong className="venuePCost"> {venue.priceLevel}</strong> 
                   </p>
                 )}
               </section>
             )}
 
             <section id="mapSection">
+              <hr />
               <h2>Location</h2>
               <p>{venue?.address || "Address not provided."}</p>
-              <hr />
+              <hr></hr>
+               <APIProvider apiKey="AIzaSyDy-6rkV4XH2UXvyubcwT3PLH9H-Hef0vI">
+                    <Map
+                        defaultZoom={15}
+                        defaultCenter={{ lat: Number(venue.coordinates[0]), lng: Number(venue.coordinates[1])}}
+                        mapId={"8e0468e996c5bdf3b9dbf482"}
+                        >
+                        <AdvancedMarker position={{ lat: Number(venue.coordinates[0]), lng: Number(venue.coordinates[1]) }}>
+                            <MapMarker frequency={busyAtRandom(1, 3)}/>
+                        </AdvancedMarker>
+                    </Map>
+                </APIProvider>
+              
             </section>
           </>
         )}

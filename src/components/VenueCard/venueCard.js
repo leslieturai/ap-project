@@ -6,16 +6,20 @@ export default function VenueCard({ venue }) {
 
   return (
     <div className="venueCard">
-      <div className="venueName">
-        <Link to={`/details/${venue.id}`}>{venue.name}</Link>
-      </div>
+      
+        <Link className="venueName" to={`/details/${venue.id}`}>{venue.name}</Link>
+      
 
       <p className="venueAddress">{venue.address}</p>
+      <hr></hr>
 
       <div className="venueTags">
-        {venue.hasHappyHour && <span>Happy Hour</span>}
-        {venue.hasDailySpecials && <span>Daily Specials</span>}
-        {venue.hasEvents && <span>Events</span>}
+        <ul>
+          <li>{venue.hasHappyHour ? "Happy hour" : "No happy hour"}</li>
+          <li>{venue.hasDailySpecials ? "Daily Specials" : "No daily specials"}</li>
+          <li>{venue.hasEvents ? "Hosts Events" : "No events"}</li>
+          <li className="venueCost">{venue.priceLevel}</li>
+        </ul>
       </div>
     </div>
   );

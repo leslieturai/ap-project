@@ -13,8 +13,7 @@ hr {
 #detailSection {
     display: flex;
     flex-direction: column;
-    gap: 2%;
-
+    
     margin: auto;
     width: 80%;
     height: 200vh !important;
@@ -43,9 +42,11 @@ hr {
     color: black;
 }
 
-.venueCost {
-    color: #1F9D05;
+.venuePCost {
+    color: #1F9D05 !important;
+    font-weight: bold;
 }
+
 
 .venueScore {
     color: #FFE100;

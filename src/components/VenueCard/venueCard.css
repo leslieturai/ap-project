@@ -2,12 +2,21 @@
 
 .venueCard {
     border: 1px solid black;
+    border-radius: 1rem;
+
+    box-shadow: (7px 6px 5px #000000);
 
     width: 10%;
     padding: 0.5rem;
     
     display: flex;
     flex-direction: column;
+    gap: 0.1rem;
+}
+
+.venueCard ul {
+    list-style: none;
+    margin-left: -25%;
 }
 
 .venueRankings {
@@ -17,7 +26,7 @@
     flex-wrap: wrap;
 }
 
-.venueName a {
+.venueName {
     font-weight: 600;
     font-size: 1.1rem;
     color: black;
@@ -25,6 +34,7 @@
 
 .venueCost {
     color: #1F9D05;
+    font-weight: bold;
 }
 
 .venueScore {

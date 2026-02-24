@@ -14,7 +14,7 @@ import RequireRole from "./components/Auth/RequireRole";
 function App() {
   return (
     <APIProvider
-      apiKey={process.env.REACT_APP_MAPS_KEY}
+      apiKey={"AIzaSyDy-6rkV4XH2UXvyubcwT3PLH9H-Hef0vI"}
       onLoad={() => console.log("Maps API has loaded.")}
     >
       <BrowserRouter>

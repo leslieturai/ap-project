@@ -1,0 +1,32 @@
+
+
+.mapMarker {
+    font-size: 0.5rem;
+    background-color: white;
+    color: black;
+    font-weight: bold;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem ;
+    width: 3.2rem;
+    text-align: center;
+    border-radius: 1rem;
+    border: 1px solid rgb(182, 182, 182);
+    scale: 2;
+
+}
+
+.Packed {
+    border: 1px solid red !important;
+}
+
+
+.Empty {
+    border: 1px solid #1F9D05 !important;
+}
+
+.Not.too.busy {
+    border: 1px solid #F3A11E !important;
+    width: 3.5rem;
+}
+
+/*  */
