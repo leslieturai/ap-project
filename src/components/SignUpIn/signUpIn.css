@@ -62,8 +62,7 @@
   width: 40%;
 }
 
-
-/* optional wrapper; */
+/* wrapper */
 .auth-container {
   width: 100%;
   display: flex;
@@ -91,7 +90,7 @@
 
 /* active mode button */
 .auth-toggle button.active {
-  background: black;
+  background: rgba(168, 197, 214, 0.308);
   color: white;
 }
 
@@ -113,4 +112,58 @@
 #authSection button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+
+.auth-role {
+  width: 75%;
+  margin-top: 0.75rem;
+  margin-bottom: 0.25rem;
+}
+
+.auth-role-title {
+  margin: 0 0 0.5rem 0;
+  font-weight: bold;
+  color: black;
+  text-align: left;
+}
+
+.auth-role-buttons {
+  display: flex;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.auth-role-buttons button {
+  width: 50%;
+  font-size: 1rem;
+  padding: 0.6rem;
+  margin-top: 0;
+  background: rgb(182, 182, 182);
+  cursor: pointer;
+  border-radius: 1rem;
+}
+
+.auth-role-buttons button.active {
+  background: black;
+  color: white;
+}
+.reset-btn {
+  width: 75%;
+  font-size: 1rem;
+  padding: 0.6rem;
+  border-radius: 1rem;
+  border: none;
+  margin-top: 0.5rem;
+  background: rgb(150, 150, 150);
+  cursor: pointer;
+}
+
+.auth-success {
+  width: 75%;
+  color: green;
+  font-size: 1rem;
+  font-weight: bold;
+  margin-top: 0.5rem;
+  text-align: center;
 }
