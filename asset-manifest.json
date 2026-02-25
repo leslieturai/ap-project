@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/ap-project/static/css/main.5e269eb0.css",
+    "main.js": "/ap-project/static/js/main.9807ba76.js",
+    "static/js/453.4bd8da83.chunk.js": "/ap-project/static/js/453.4bd8da83.chunk.js",
+    "index.html": "/ap-project/index.html",
+    "main.5e269eb0.css.map": "/ap-project/static/css/main.5e269eb0.css.map",
+    "main.9807ba76.js.map": "/ap-project/static/js/main.9807ba76.js.map",
+    "453.4bd8da83.chunk.js.map": "/ap-project/static/js/453.4bd8da83.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.5e269eb0.css",
+    "static/js/main.9807ba76.js"
+  ]
+}
