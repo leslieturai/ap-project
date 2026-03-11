@@ -8,10 +8,10 @@ import CitySelect from './components/CitySelect/citySelect.js';
 import OwnerPage from './components/OwnerPage/ownerPage.js';
 import OwnerDetails from './components/OwnerDetails/OwnerDetails.js';
 import RequireRole from "./components/Auth/RequireRole";
+import RequireAuth from "./components/Auth/RequireAuth";
 import Listings from "./components/Listings/Listings";
 import Deals from "./components/Deals/deals.js";
-
-
+import Favorites from './components/Favorites/favorites';
 
 function App() {
   return (
@@ -21,31 +21,79 @@ function App() {
     >
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Home />} />
           <Route path="/sign-up-in" element={<SignUpIn />} />
-          <Route path="/details/:id" element={<Details />} />
-          <Route path="/city-select" element={<CitySelect />} />
-          <Route path="/owner-page" element={<OwnerPage />} />
-          <Route path="/owner-details/:id" element={<OwnerDetails />} />
-          <Route path="/listings" element={<Listings />} />
-          <Route path="/" element={
-            <RequireRole role="customer">
-              <Home/>
-            </RequireRole>
-          } />
 
-          <Route path="/city-select" element={
-            <RequireRole role="customer">
-              <CitySelect/>
-            </RequireRole>
-          } />
+          <Route
+            path="/"
+            element={
+              <RequireAuth>
+                <Home />
+              </RequireAuth>
+            }
+          />
 
-          <Route path="/owner-page" element={
-            <RequireRole role="owner">
-              <OwnerPage/>
-            </RequireRole>
-          } />
-          <Route path="/deals" element={<Deals />} />
+          <Route
+            path="/details/:id"
+            element={
+              <RequireAuth>
+                <Details />
+              </RequireAuth>
+            }
+          />
+
+          <Route
+            path="/listings"
+            element={
+              <RequireAuth>
+                <Listings />
+              </RequireAuth>
+            }
+          />
+
+          <Route
+            path="/favorites"
+            element={
+              <RequireAuth>
+                <Favorites />
+              </RequireAuth>
+            }
+          />
+
+          <Route
+            path="/deals"
+            element={
+              <RequireAuth>
+                <Deals />
+              </RequireAuth>
+            }
+          />
+
+          <Route
+            path="/city-select"
+            element={
+              <RequireRole role="customer">
+                <CitySelect />
+              </RequireRole>
+            }
+          />
+
+          <Route
+            path="/owner-page"
+            element={
+              <RequireRole role="owner">
+                <OwnerPage />
+              </RequireRole>
+            }
+          />
+
+          <Route
+            path="/owner-details/:id"
+            element={
+              <RequireRole role="owner">
+                <OwnerDetails />
+              </RequireRole>
+            }
+          />
         </Routes>
       </BrowserRouter>
     </APIProvider>

@@ -9,8 +9,9 @@ import "./header.css";
 
 export default function Header() {
   const navigate = useNavigate();
+
   const [user, setUser] = useState(null);
-  const [role, setRole] = useState(""); 
+  const [role, setRole] = useState("");
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (u) => {
@@ -23,8 +24,13 @@ export default function Header() {
 
       try {
         const snap = await getDoc(doc(db, "users", u.uid));
-        if (snap.exists()) setRole(snap.data()?.role || "user");
-        else setRole("user");
+
+        if (snap.exists()) {
+          const userData = snap.data();
+          setRole(userData?.role || "user");
+        } else {
+          setRole("user");
+        }
       } catch {
         setRole("user");
       }
@@ -40,9 +46,7 @@ export default function Header() {
 
   return (
     <header id="page-header">
-      <Link to="/">LOGO</Link>
-
-      <input type="text" placeholder="Search for events" />
+      <Link id="logo" to="/city-select">EvoEats</Link>
 
       <section id="header-auth">
         {!user ? (
@@ -53,7 +57,12 @@ export default function Header() {
           </>
         ) : (
           <>
-            {role === "owner" && <Link to="/owner-page">Owner Portal</Link>}
+            <Link to="/favorites">⭐ Favorites</Link>
+
+            {role === "owner" && (
+              <Link to="/owner-page">Owner Portal</Link>
+            )}
+
             <button type="button" onClick={handleLogout}>
               Logout
             </button>
