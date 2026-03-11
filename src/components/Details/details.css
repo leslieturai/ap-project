@@ -55,3 +55,24 @@ hr {
 #mapSection {
     height: 90vh;
 }
+.favoriteBtn {
+  margin: 1rem 0;
+  padding: 0.7rem 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+.detailsTopActions {
+  display: flex;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+.favoriteBtn,
+.shareBtn {
+  padding: 0.7rem 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+}

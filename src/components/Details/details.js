@@ -3,8 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import Header from "../Header/Header";
 import "./details.css";
 
-import { db } from "../../firebase";
-import { doc, getDoc } from "firebase/firestore";
+import { db, auth } from "../../firebase";
+import { doc, getDoc, setDoc, deleteDoc, onSnapshot } from "firebase/firestore";
 
 import { APIProvider, Map, AdvancedMarker } from "@vis.gl/react-google-maps";
 import MapMarker from "../MapMarker/mapMarker";
@@ -16,6 +16,7 @@ export default function Details() {
   const [venue, setVenue] = useState(null);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState("");
+  const [isFavorite, setIsFavorite] = useState(false);
 
   useEffect(() => {
     async function loadVenue() {
@@ -48,7 +49,70 @@ export default function Details() {
     loadVenue();
   }, [id]);
 
-  // Generate random busyness (keeps your feature)
+  useEffect(() => {
+    const user = auth.currentUser;
+
+    if (!user || !id) {
+      setIsFavorite(false);
+      return;
+    }
+
+    const favRef = doc(db, "users", user.uid, "favorites", id);
+
+    const unsubscribe = onSnapshot(favRef, (snap) => {
+      setIsFavorite(snap.exists());
+    });
+
+    return () => unsubscribe();
+  }, [id]);
+
+  async function toggleFavorite() {
+    const user = auth.currentUser;
+
+    if (!user) {
+      alert("Please log in to save favorites.");
+      return;
+    }
+
+    try {
+      const favRef = doc(db, "users", user.uid, "favorites", id);
+
+      if (isFavorite) {
+        await deleteDoc(favRef);
+      } else {
+        await setDoc(favRef, {
+          restaurantId: id,
+          name: venue?.name || "",
+          address: venue?.address || "",
+          cityId: venue?.cityId || "",
+          createdAt: new Date(),
+        });
+      }
+    } catch (e) {
+      console.error("Failed to update favorite:", e);
+      alert("Could not update favorite.");
+    }
+  }
+
+  async function handleShare() {
+    const shareUrl = window.location.href;
+
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: venue?.name || "Restaurant",
+          text: `Check out ${venue?.name || "this restaurant"} on EvoEats!`,
+          url: shareUrl,
+        });
+      } else {
+        await navigator.clipboard.writeText(shareUrl);
+        alert("Restaurant link copied to clipboard!");
+      }
+    } catch (e) {
+      console.error("Share failed:", e);
+    }
+  }
+
   function busyAtRandom(min, max) {
     const tempNum = Math.floor(Math.random() * (max - min)) + min;
     if (tempNum === 1) return "Empty";
@@ -61,13 +125,12 @@ export default function Details() {
     [venue]
   );
 
-  // Map center (fallback to Calgary if no coordinates exist)
   const mapCenter = useMemo(() => {
     const lat = Number(venue?.coordinates?.[0]);
     const lng = Number(venue?.coordinates?.[1]);
 
     if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
-      return { lat: 51.0447, lng: -114.0719 }; // Calgary fallback
+      return { lat: 51.0447, lng: -114.0719 };
     }
 
     return { lat, lng };
@@ -95,7 +158,24 @@ export default function Details() {
           <>
             <h1>{venue?.name || "Restaurant"}</h1>
 
-            {/* Address / Price / Rating */}
+            <div className="detailsTopActions">
+              <button
+                type="button"
+                onClick={toggleFavorite}
+                className="favoriteBtn"
+              >
+                {isFavorite ? "★ Remove Favorite" : "☆ Add to Favorites"}
+              </button>
+
+              <button
+                type="button"
+                onClick={handleShare}
+                className="shareBtn"
+              >
+                Share
+              </button>
+            </div>
+
             <section id="venueDesc">
               <h2>Address</h2>
               <p>{venue?.address || "Address not provided."}</p>
@@ -114,7 +194,6 @@ export default function Details() {
               )}
             </section>
 
-            {/* About / Offers */}
             {(venue?.about || venue?.offers) && (
               <section>
                 <h2>More Info</h2>
@@ -133,7 +212,6 @@ export default function Details() {
               </section>
             )}
 
-            {/* MAP */}
             <section id="mapSection">
               <hr />
               <h2>Location</h2>
@@ -159,7 +237,6 @@ export default function Details() {
               <hr />
             </section>
 
-            {/* Deals + Events */}
             <section id="offersSection">
               <hr />
               <h2>Deals & Events</h2>
