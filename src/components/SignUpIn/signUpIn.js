@@ -58,12 +58,12 @@ export default function SignUpIn() {
           password
         );
 
-        const profile = await ensureUserProfile(db, cred.user.uid, {
+        await ensureUserProfile(db, cred.user.uid, {
           role: accountType,
           cityId: "",
         });
 
-        redirectByRole(profile.role);
+        redirectByRole(accountType);
       } else {
         const cred = await signInWithEmailAndPassword(
           auth,

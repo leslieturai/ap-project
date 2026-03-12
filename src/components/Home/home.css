@@ -47,3 +47,36 @@
   flex-wrap: wrap;
   gap: 0.75rem;
 }
+.filterRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 1rem 0 1.5rem;
+  align-items: center;
+}
+
+.searchInput {
+  padding: 0.8rem 1rem;
+  border-radius: 999px;
+  border: 1px solid #ccc;
+  min-width: 240px;
+}
+
+.filterBtn,
+.filterSelect {
+  padding: 0.7rem 1rem;
+  border-radius: 999px;
+  border: 1px solid #ccc;
+  background: white;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.filterBtn.active {
+  font-weight: 700;
+  border: 2px solid #222;
+}
+
+.filterSelect {
+  outline: none;
+}

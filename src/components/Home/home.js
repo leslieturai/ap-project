@@ -21,6 +21,9 @@ export default function Home() {
   const [filterDailySpecials, setFilterDailySpecials] = useState(false);
   const [filterEvents, setFilterEvents] = useState(false);
 
+  const [foodCategory, setFoodCategory] = useState("");
+  const [eventType, setEventType] = useState("");
+
   useEffect(() => {
     async function loadUserCityAndRestaurants() {
       setErr("");
@@ -44,7 +47,7 @@ export default function Home() {
         }
 
         const userData = userSnap.data();
-        const selectedCity = userData?.cityId || "";
+        const selectedCity = userData?.cityId || "calgary";
 
         setCity(selectedCity);
 
@@ -124,6 +127,16 @@ export default function Home() {
       if (filterHappyHour && !v.hasHappyHour) return false;
       if (filterDailySpecials && !v.hasDailySpecials) return false;
       if (filterEvents && !v.hasEvents) return false;
+
+      if (foodCategory && (v.foodCategory || "").toLowerCase() !== foodCategory) {
+        return false;
+      }
+
+      if (eventType) {
+        const tags = Array.isArray(v.eventTags) ? v.eventTags : [];
+        if (!tags.includes(eventType)) return false;
+      }
+
       return true;
     });
 
@@ -159,8 +172,8 @@ export default function Home() {
 
     if (sortNewest) {
       results = [...results].sort((a, b) => {
-        const aDate = a.createdAt?.seconds || 0;
-        const bDate = b.createdAt?.seconds || 0;
+        const aDate = Number(a.createdAt) || 0;
+        const bDate = Number(b.createdAt) || 0;
         return bDate - aDate;
       });
     }
@@ -172,6 +185,8 @@ export default function Home() {
     filterHappyHour,
     filterDailySpecials,
     filterEvents,
+    foodCategory,
+    eventType,
     sortByDistance,
     userLocation,
     sortNewest,
@@ -182,6 +197,8 @@ export default function Home() {
     setFilterHappyHour(false);
     setFilterDailySpecials(false);
     setFilterEvents(false);
+    setFoodCategory("");
+    setEventType("");
     setSortByDistance(false);
     setSortNewest(false);
     setUserLocation(null);
@@ -246,6 +263,32 @@ export default function Home() {
           >
             Events
           </button>
+
+          <select
+            className="filterSelect"
+            value={foodCategory}
+            onChange={(e) => setFoodCategory(e.target.value)}
+          >
+            <option value="">All Categories</option>
+            <option value="pub">Pub</option>
+            <option value="pizza">Pizza</option>
+            <option value="mexican">Mexican</option>
+            <option value="asian">Asian</option>
+            <option value="burger">Burger</option>
+            <option value="cafe">Cafe</option>
+          </select>
+
+          <select
+            className="filterSelect"
+            value={eventType}
+            onChange={(e) => setEventType(e.target.value)}
+          >
+            <option value="">All Event Types</option>
+            <option value="live-music">Live Music</option>
+            <option value="trivia">Trivia</option>
+            <option value="sports">Sports</option>
+            <option value="dj">DJ</option>
+          </select>
 
           <button type="button" className="filterBtn" onClick={clearFilters}>
             Clear

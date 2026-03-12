@@ -19,12 +19,16 @@ export default function OwnerDetails() {
   const [err, setErr] = useState("");
   const [msg, setMsg] = useState("");
 
-  // form fields
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [priceLevel, setPriceLevel] = useState("$");
   const [about, setAbout] = useState("");
   const [offers, setOffers] = useState("");
+  const [foodCategory, setFoodCategory] = useState("");
+  const [happyHourDetails, setHappyHourDetails] = useState("");
+  const [dailySpecialsDetails, setDailySpecialsDetails] = useState("");
+  const [eventTagsInput, setEventTagsInput] = useState("");
+
   const [hasHappyHour, setHasHappyHour] = useState(false);
   const [hasDailySpecials, setHasDailySpecials] = useState(false);
   const [hasEvents, setHasEvents] = useState(false);
@@ -38,7 +42,6 @@ export default function OwnerDetails() {
 
       setUser(u);
 
-      // define loader INSIDE effect to avoid missing-deps warning
       async function loadVenue() {
         setErr("");
         setMsg("");
@@ -70,12 +73,18 @@ export default function OwnerDetails() {
 
           setVenue(data);
 
-          // populate form
           setName(data.name || "");
           setAddress(data.address || "");
           setPriceLevel(data.priceLevel || "$");
           setAbout(data.about || "");
           setOffers(data.offers || "");
+          setFoodCategory(data.foodCategory || "");
+          setHappyHourDetails(data.happyHourDetails || "");
+          setDailySpecialsDetails(data.dailySpecialsDetails || "");
+          setEventTagsInput(
+            Array.isArray(data.eventTags) ? data.eventTags.join(", ") : ""
+          );
+
           setHasHappyHour(!!data.hasHappyHour);
           setHasDailySpecials(!!data.hasDailySpecials);
           setHasEvents(!!data.hasEvents);
@@ -101,6 +110,11 @@ export default function OwnerDetails() {
     setMsg("");
     setSaving(true);
 
+    const eventTags = eventTagsInput
+      .split(",")
+      .map((tag) => tag.trim().toLowerCase())
+      .filter(Boolean);
+
     try {
       await updateDoc(doc(db, "restaurants", venue.id), {
         name: name.trim(),
@@ -108,6 +122,10 @@ export default function OwnerDetails() {
         priceLevel,
         about,
         offers,
+        foodCategory: foodCategory.trim().toLowerCase(),
+        happyHourDetails: happyHourDetails.trim(),
+        dailySpecialsDetails: dailySpecialsDetails.trim(),
+        eventTags,
         hasHappyHour,
         hasDailySpecials,
         hasEvents,
@@ -158,116 +176,159 @@ export default function OwnerDetails() {
             </button>
           </>
         ) : (
-          <>
-            <form onSubmit={handleSave} className="ownerDetailsForm">
+          <form onSubmit={handleSave} className="ownerDetailsForm">
+            <label>
+              Name
+              <input
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                disabled={saving}
+              />
+            </label>
+
+            <label>
+              Address
+              <input
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                disabled={saving}
+              />
+            </label>
+
+            <label>
+              Price Level
+              <select
+                value={priceLevel}
+                onChange={(e) => setPriceLevel(e.target.value)}
+                disabled={saving}
+              >
+                <option value="$">$</option>
+                <option value="$$">$$</option>
+                <option value="$$$">$$$</option>
+              </select>
+            </label>
+
+            <label>
+              Food Category
+              <select
+                value={foodCategory}
+                onChange={(e) => setFoodCategory(e.target.value)}
+                disabled={saving}
+              >
+                <option value="">Select Food Category</option>
+                <option value="pub">Pub</option>
+                <option value="pizza">Pizza</option>
+                <option value="mexican">Mexican</option>
+                <option value="asian">Asian</option>
+                <option value="burger">Burger</option>
+                <option value="cafe">Cafe</option>
+              </select>
+            </label>
+
+            <label>
+              About
+              <textarea
+                value={about}
+                onChange={(e) => setAbout(e.target.value)}
+                disabled={saving}
+              />
+            </label>
+
+            <label>
+              Offers
+              <textarea
+                value={offers}
+                onChange={(e) => setOffers(e.target.value)}
+                disabled={saving}
+              />
+            </label>
+
+            <label>
+              Happy Hour Details
+              <textarea
+                value={happyHourDetails}
+                onChange={(e) => setHappyHourDetails(e.target.value)}
+                disabled={saving}
+              />
+            </label>
+
+            <label>
+              Daily Specials Details
+              <textarea
+                value={dailySpecialsDetails}
+                onChange={(e) => setDailySpecialsDetails(e.target.value)}
+                disabled={saving}
+              />
+            </label>
+
+            <label>
+              Event Tags
+              <input
+                value={eventTagsInput}
+                onChange={(e) => setEventTagsInput(e.target.value)}
+                placeholder="trivia, live-music, sports"
+                disabled={saving}
+              />
+            </label>
+
+            <div className="ownerChecks">
               <label>
-                Name
                 <input
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  type="checkbox"
+                  checked={hasHappyHour}
+                  onChange={(e) => setHasHappyHour(e.target.checked)}
                   disabled={saving}
                 />
+                Happy Hour
               </label>
 
               <label>
-                Address
                 <input
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
+                  type="checkbox"
+                  checked={hasDailySpecials}
+                  onChange={(e) => setHasDailySpecials(e.target.checked)}
                   disabled={saving}
                 />
+                Daily Specials
               </label>
 
               <label>
-                Price Level
-                <select
-                  value={priceLevel}
-                  onChange={(e) => setPriceLevel(e.target.value)}
-                  disabled={saving}
-                >
-                  <option value="$">$</option>
-                  <option value="$$">$$</option>
-                  <option value="$$$">$$$</option>
-                </select>
-              </label>
-
-              <label>
-                About
-                <textarea
-                  value={about}
-                  onChange={(e) => setAbout(e.target.value)}
+                <input
+                  type="checkbox"
+                  checked={hasEvents}
+                  onChange={(e) => setHasEvents(e.target.checked)}
                   disabled={saving}
                 />
+                Events
               </label>
+            </div>
 
-              <label>
-                Offers
-                <textarea
-                  value={offers}
-                  onChange={(e) => setOffers(e.target.value)}
-                  disabled={saving}
-                />
-              </label>
+            {msg && <p className="ownerDetailsMsg">{msg}</p>}
+            {err && <p className="ownerDetailsError">{err}</p>}
 
-              <div className="ownerChecks">
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={hasHappyHour}
-                    onChange={(e) => setHasHappyHour(e.target.checked)}
-                    disabled={saving}
-                  />
-                  Happy Hour
-                </label>
+            <div className="ownerDetailsActions">
+              <button type="submit" disabled={saving}>
+                {saving ? "Saving..." : "Save Changes"}
+              </button>
 
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={hasDailySpecials}
-                    onChange={(e) => setHasDailySpecials(e.target.checked)}
-                    disabled={saving}
-                  />
-                  Daily Specials
-                </label>
+              <button
+                type="button"
+                className="danger"
+                onClick={handleDelete}
+                disabled={saving}
+              >
+                Delete Restaurant
+              </button>
 
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={hasEvents}
-                    onChange={(e) => setHasEvents(e.target.checked)}
-                    disabled={saving}
-                  />
-                  Events
-                </label>
-              </div>
-
-              {msg && <p className="ownerDetailsMsg">{msg}</p>}
-              {err && <p className="ownerDetailsError">{err}</p>}
-
-              <div className="ownerDetailsActions">
-                <button type="submit" disabled={saving}>
-                  {saving ? "Saving..." : "Save Changes"}
-                </button>
-
-                <button
-                  type="button"
-                  className="danger"
-                  onClick={handleDelete}
-                  disabled={saving}
-                >
-                  Delete Restaurant
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => navigate("/owner-page")}
-                  disabled={saving}
-                >
-                  Back
-                </button>
-              </div>
-            </form>
-          </>
+              <button
+                type="button"
+                onClick={() => navigate("/owner-page")}
+                disabled={saving}
+              >
+                Back
+              </button>
+            </div>
+          </form>
         )}
       </section>
     </>

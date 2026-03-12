@@ -76,3 +76,25 @@ hr {
   cursor: pointer;
   font-size: 1rem;
 }
+.ratingSection {
+  margin: 1rem 0;
+}
+
+.ratingButtons {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.ratingBtn {
+  padding: 0.5rem 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  cursor: pointer;
+  background: white;
+}
+
+.activeRating {
+  font-weight: 700;
+  border: 2px solid #222;
+}
