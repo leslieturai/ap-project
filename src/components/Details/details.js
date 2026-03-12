@@ -4,7 +4,16 @@ import Header from "../Header/Header";
 import "./details.css";
 
 import { db, auth } from "../../firebase";
-import { doc, getDoc, setDoc, deleteDoc, onSnapshot } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  setDoc,
+  deleteDoc,
+  onSnapshot,
+  collection,
+  getDocs,
+  updateDoc,
+} from "firebase/firestore";
 
 import { APIProvider, Map, AdvancedMarker } from "@vis.gl/react-google-maps";
 import MapMarker from "../MapMarker/mapMarker";
@@ -17,6 +26,9 @@ export default function Details() {
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState("");
   const [isFavorite, setIsFavorite] = useState(false);
+
+  const [userRating, setUserRating] = useState(0);
+  const [ratingLoading, setRatingLoading] = useState(false);
 
   useEffect(() => {
     async function loadVenue() {
@@ -66,6 +78,32 @@ export default function Details() {
     return () => unsubscribe();
   }, [id]);
 
+  useEffect(() => {
+    async function loadUserRating() {
+      const user = auth.currentUser;
+
+      if (!user || !id) {
+        setUserRating(0);
+        return;
+      }
+
+      try {
+        const ratingRef = doc(db, "restaurants", id, "ratings", user.uid);
+        const snap = await getDoc(ratingRef);
+
+        if (snap.exists()) {
+          setUserRating(Number(snap.data().rating) || 0);
+        } else {
+          setUserRating(0);
+        }
+      } catch (e) {
+        console.error("Failed to load user rating:", e);
+      }
+    }
+
+    loadUserRating();
+  }, [id]);
+
   async function toggleFavorite() {
     const user = auth.currentUser;
 
@@ -110,6 +148,58 @@ export default function Details() {
       }
     } catch (e) {
       console.error("Share failed:", e);
+    }
+  }
+
+  async function handleRate(newRating) {
+    const user = auth.currentUser;
+
+    if (!user) {
+      alert("Please log in to rate restaurants.");
+      return;
+    }
+
+    setRatingLoading(true);
+
+    try {
+      const ratingRef = doc(db, "restaurants", id, "ratings", user.uid);
+
+      await setDoc(ratingRef, {
+        rating: newRating,
+        createdAt: Date.now(),
+      });
+
+      setUserRating(newRating);
+
+      const ratingsRef = collection(db, "restaurants", id, "ratings");
+      const ratingsSnap = await getDocs(ratingsRef);
+
+      const ratings = ratingsSnap.docs.map((d) => Number(d.data().rating) || 0);
+      const ratingCount = ratings.length;
+      const averageRating =
+        ratingCount > 0
+          ? ratings.reduce((sum, r) => sum + r, 0) / ratingCount
+          : 0;
+
+      await updateDoc(doc(db, "restaurants", id), {
+        rating: Number(averageRating.toFixed(1)),
+        ratingCount,
+      });
+
+      setVenue((prev) =>
+        prev
+          ? {
+              ...prev,
+              rating: Number(averageRating.toFixed(1)),
+              ratingCount,
+            }
+          : prev
+      );
+    } catch (e) {
+      console.error("Failed to save rating:", e);
+      alert("Could not save rating.");
+    } finally {
+      setRatingLoading(false);
     }
   }
 
@@ -158,6 +248,27 @@ export default function Details() {
           <>
             <h1>{venue?.name || "Restaurant"}</h1>
 
+            <section className="ratingSection">
+              <h3>Your Rating</h3>
+              <div className="ratingButtons">
+                {[1, 2, 3, 4, 5].map((num) => (
+                  <button
+                    key={num}
+                    type="button"
+                    className={
+                      userRating === num
+                        ? "ratingBtn activeRating"
+                        : "ratingBtn"
+                    }
+                    onClick={() => handleRate(num)}
+                    disabled={ratingLoading}
+                  >
+                    {num}★
+                  </button>
+                ))}
+              </div>
+            </section>
+
             <div className="detailsTopActions">
               <button
                 type="button"
@@ -190,6 +301,7 @@ export default function Details() {
               {typeof venue?.rating === "number" && (
                 <p>
                   <strong>Rating:</strong> {venue.rating}
+                  {venue?.ratingCount ? ` (${venue.ratingCount} ratings)` : ""}
                 </p>
               )}
             </section>

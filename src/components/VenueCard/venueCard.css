@@ -46,3 +46,47 @@
   color: #555;
   margin-top: 4px;
 }
+.venueCard {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 16px;
+  padding: 1rem;
+}
+
+.venueName {
+  font-size: 1.2rem;
+  font-weight: 700;
+  text-decoration: none;
+  color: black;
+}
+
+.venueAddress {
+  margin-top: 0.4rem;
+}
+
+.venueDistance,
+.venueCategory,
+.venueRating {
+  margin-top: 0.35rem;
+  font-size: 0.95rem;
+}
+
+.ratingNumber {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.eventTagRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.6rem;
+}
+
+.eventTag {
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid #ccc;
+  font-size: 0.85rem;
+  text-transform: capitalize;
+}

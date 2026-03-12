@@ -6,34 +6,50 @@ import { useNavigate } from "react-router-dom";
 
 export default function RequireRole({ role, children }) {
   const navigate = useNavigate();
-  const [ok, setOk] = useState(false);
+  const [status, setStatus] = useState("loading");
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (u) => {
-      if (!u) {
-        navigate("/sign-up-in");
-        return;
-      }
+      try {
+        if (!u) {
+          navigate("/sign-up-in", { replace: true });
+          return;
+        }
 
-      const profile = await getUserProfile(db, u.uid);
-      if (!profile) {
-        navigate("/sign-up-in");
-        return;
-      }
+        let profile = await getUserProfile(db, u.uid);
 
-      if (profile.role !== role) {
-        if (profile.role === "owner") navigate("/owner-page");
-        else navigate("/");
-        return;
-      }
+        if (!profile) {
+          await new Promise((resolve) => setTimeout(resolve, 300));
+          profile = await getUserProfile(db, u.uid);
+        }
 
-      setOk(true);
+        if (!profile) {
+          navigate("/sign-up-in", { replace: true });
+          return;
+        }
+
+        if (profile.role !== role) {
+          if (profile.role === "owner") {
+            navigate("/owner-page", { replace: true });
+          } else {
+            navigate("/", { replace: true });
+          }
+          return;
+        }
+
+        setStatus("ok");
+      } catch (e) {
+        console.error("RequireRole error:", e);
+        navigate("/sign-up-in", { replace: true });
+      }
     });
 
     return () => unsub();
   }, [navigate, role]);
 
-  if (!ok) return <div style={{ padding: 16 }}>Loading...</div>;
+  if (status === "loading") {
+    return <div style={{ padding: 16 }}>Loading...</div>;
+  }
 
   return children;
 }

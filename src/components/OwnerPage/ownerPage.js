@@ -16,13 +16,20 @@ export default function OwnerPage() {
 
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
+  const [priceLevel, setPriceLevel] = useState("$");
+  const [foodCategory, setFoodCategory] = useState("");
+  const [happyHourDetails, setHappyHourDetails] = useState("");
+  const [dailySpecialsDetails, setDailySpecialsDetails] = useState("");
+  const [eventTagsInput, setEventTagsInput] = useState("");
+
   const [saving, setSaving] = useState(false);
   const [err, setErr] = useState("");
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (u) => {
-      if (!u) navigate("/sign-up-in");
-      else {
+      if (!u) {
+        navigate("/sign-up-in");
+      } else {
         setUser(u);
         loadRestaurants(u.uid);
       }
@@ -32,9 +39,13 @@ export default function OwnerPage() {
   }, [navigate]);
 
   async function loadRestaurants(uid) {
-    const q = query(collection(db, "restaurants"), where("ownerUid", "==", uid));
-    const snap = await getDocs(q);
-    setRestaurants(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
+    try {
+      const q = query(collection(db, "restaurants"), where("ownerUid", "==", uid));
+      const snap = await getDocs(q);
+      setRestaurants(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
+    } catch (e) {
+      setErr(e?.message || "Failed to load restaurants.");
+    }
   }
 
   async function handleAddRestaurant(e) {
@@ -46,7 +57,18 @@ export default function OwnerPage() {
       return;
     }
 
+    if (!user) {
+      setErr("You must be logged in.");
+      return;
+    }
+
+    const eventTags = eventTagsInput
+      .split(",")
+      .map((tag) => tag.trim().toLowerCase())
+      .filter(Boolean);
+
     setSaving(true);
+
     try {
       await addDoc(collection(db, "restaurants"), {
         name: name.trim(),
@@ -54,17 +76,27 @@ export default function OwnerPage() {
         cityId: "calgary",
         ownerUid: user.uid,
         rating: 0,
-        priceLevel: "$",
+        priceLevel,
         offers: "",
         about: "",
-        hasEvents: false,
-        hasHappyHour: false,
-        hasDailySpecials: false,
+        foodCategory: foodCategory.trim().toLowerCase(),
+        happyHourDetails: happyHourDetails.trim(),
+        dailySpecialsDetails: dailySpecialsDetails.trim(),
+        eventTags,
+        events: [],
+        hasHappyHour: !!happyHourDetails.trim(),
+        hasDailySpecials: !!dailySpecialsDetails.trim(),
+        hasEvents: eventTags.length > 0,
         createdAt: Date.now(),
       });
 
       setName("");
       setAddress("");
+      setPriceLevel("$");
+      setFoodCategory("");
+      setHappyHourDetails("");
+      setDailySpecialsDetails("");
+      setEventTagsInput("");
 
       await loadRestaurants(user.uid);
     } catch (e) {
@@ -101,6 +133,52 @@ export default function OwnerPage() {
             disabled={saving}
           />
 
+          <select
+            value={priceLevel}
+            onChange={(e) => setPriceLevel(e.target.value)}
+            disabled={saving}
+          >
+            <option value="$">$</option>
+            <option value="$$">$$</option>
+            <option value="$$$">$$$</option>
+          </select>
+
+          <select
+            value={foodCategory}
+            onChange={(e) => setFoodCategory(e.target.value)}
+            disabled={saving}
+          >
+            <option value="">Select Food Category</option>
+            <option value="pub">Pub</option>
+            <option value="pizza">Pizza</option>
+            <option value="mexican">Mexican</option>
+            <option value="asian">Asian</option>
+            <option value="burger">Burger</option>
+            <option value="cafe">Cafe</option>
+          </select>
+
+          <textarea
+            placeholder="Happy Hour Details"
+            value={happyHourDetails}
+            onChange={(e) => setHappyHourDetails(e.target.value)}
+            disabled={saving}
+          />
+
+          <textarea
+            placeholder="Daily Specials Details"
+            value={dailySpecialsDetails}
+            onChange={(e) => setDailySpecialsDetails(e.target.value)}
+            disabled={saving}
+          />
+
+          <input
+            type="text"
+            placeholder="Event Tags (example: trivia, live-music, sports)"
+            value={eventTagsInput}
+            onChange={(e) => setEventTagsInput(e.target.value)}
+            disabled={saving}
+          />
+
           <button type="submit" disabled={saving}>
             {saving ? "Saving..." : "Add Restaurant"}
           </button>
@@ -119,6 +197,8 @@ export default function OwnerPage() {
                 <div>
                   <strong>{r.name}</strong>
                   <p className="ownerAddr">{r.address}</p>
+                  {r.foodCategory && <p>{r.foodCategory}</p>}
+                  {r.priceLevel && <p>Price: {r.priceLevel}</p>}
                 </div>
 
                 <div className="ownerActions">
