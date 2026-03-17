@@ -213,86 +213,88 @@ export default function Home() {
       <Header />
 
       <section id="homeSection">
-        <h1>{cityTitle ? `Restaurants in ${cityTitle}` : "Restaurants"}</h1>
+        <div id="home-colour-block">
+          <h1>{cityTitle ? `Restaurants in ${cityTitle}` : "Restaurants"}</h1>
 
-        <div className="filterRow">
-          <input
-            className="searchInput"
-            type="text"
-            placeholder="Search restaurants..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
+          <div className="filterRow">
+            <input
+              className="searchInput"
+              type="text"
+              placeholder="Search restaurants..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
 
-          <button
-            type="button"
-            className={sortByDistance ? "filterBtn active" : "filterBtn"}
-            onClick={handleNearMe}
-          >
-            Near Me
-          </button>
+            <button
+              type="button"
+              className={sortByDistance ? "filterBtn active" : "filterBtn"}
+              onClick={handleNearMe}
+            >
+              Near Me
+            </button>
 
-          <button
-            type="button"
-            className={sortNewest ? "filterBtn active" : "filterBtn"}
-            onClick={() => setSortNewest((p) => !p)}
-          >
-            Newest
-          </button>
+            <button
+              type="button"
+              className={sortNewest ? "filterBtn active" : "filterBtn"}
+              onClick={() => setSortNewest((p) => !p)}
+            >
+              Newest
+            </button>
 
-          <button
-            type="button"
-            className={filterHappyHour ? "filterBtn active" : "filterBtn"}
-            onClick={() => setFilterHappyHour((p) => !p)}
-          >
-            Happy Hour
-          </button>
+            <button
+              type="button"
+              className={filterHappyHour ? "filterBtn active" : "filterBtn"}
+              onClick={() => setFilterHappyHour((p) => !p)}
+            >
+              Happy Hour
+            </button>
 
-          <button
-            type="button"
-            className={filterDailySpecials ? "filterBtn active" : "filterBtn"}
-            onClick={() => setFilterDailySpecials((p) => !p)}
-          >
-            Daily Specials
-          </button>
+            <button
+              type="button"
+              className={filterDailySpecials ? "filterBtn active" : "filterBtn"}
+              onClick={() => setFilterDailySpecials((p) => !p)}
+            >
+              Daily Specials
+            </button>
 
-          <button
-            type="button"
-            className={filterEvents ? "filterBtn active" : "filterBtn"}
-            onClick={() => setFilterEvents((p) => !p)}
-          >
-            Events
-          </button>
+            <button
+              type="button"
+              className={filterEvents ? "filterBtn active" : "filterBtn"}
+              onClick={() => setFilterEvents((p) => !p)}
+            >
+              Events
+            </button>
 
-          <select
-            className="filterSelect"
-            value={foodCategory}
-            onChange={(e) => setFoodCategory(e.target.value)}
-          >
-            <option value="">All Categories</option>
-            <option value="pub">Pub</option>
-            <option value="pizza">Pizza</option>
-            <option value="mexican">Mexican</option>
-            <option value="asian">Asian</option>
-            <option value="burger">Burger</option>
-            <option value="cafe">Cafe</option>
-          </select>
+            <select
+              className="filterSelect"
+              value={foodCategory}
+              onChange={(e) => setFoodCategory(e.target.value)}
+            >
+              <option value="">All Categories</option>
+              <option value="pub">Pub</option>
+              <option value="pizza">Pizza</option>
+              <option value="mexican">Mexican</option>
+              <option value="asian">Asian</option>
+              <option value="burger">Burger</option>
+              <option value="cafe">Cafe</option>
+            </select>
 
-          <select
-            className="filterSelect"
-            value={eventType}
-            onChange={(e) => setEventType(e.target.value)}
-          >
-            <option value="">All Event Types</option>
-            <option value="live-music">Live Music</option>
-            <option value="trivia">Trivia</option>
-            <option value="sports">Sports</option>
-            <option value="dj">DJ</option>
-          </select>
+            <select
+              className="filterSelect"
+              value={eventType}
+              onChange={(e) => setEventType(e.target.value)}
+            >
+              <option value="">All Event Types</option>
+              <option value="live-music">Live Music</option>
+              <option value="trivia">Trivia</option>
+              <option value="sports">Sports</option>
+              <option value="dj">DJ</option>
+            </select>
 
-          <button type="button" className="filterBtn" onClick={clearFilters}>
-            Clear
-          </button>
+            <button type="button" className="filterBtn" onClick={clearFilters}>
+              Clear
+            </button>
+          </div>
         </div>
 
         {loading ? (

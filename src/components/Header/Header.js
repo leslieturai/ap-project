@@ -57,7 +57,7 @@ export default function Header() {
           </>
         ) : (
           <>
-            <Link to="/favorites">⭐ Favorites</Link>
+            <Link to="/favorites">Favorites</Link>
 
             {role === "owner" && (
               <Link to="/owner-page">Owner Portal</Link>

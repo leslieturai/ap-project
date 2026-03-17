@@ -1,11 +1,8 @@
 
 
 .venueCard {
-    border: 1px solid black;
+    border: 5px solid #FFCA00;
     border-radius: 1rem;
-
-    box-shadow: (7px 6px 5px #000000);
-
     width: 10%;
     padding: 0.5rem;
     
@@ -46,12 +43,12 @@
   color: #555;
   margin-top: 4px;
 }
-.venueCard {
+/* .venueCard {
   background: white;
   border: 1px solid #ddd;
   border-radius: 16px;
   padding: 1rem;
-}
+} */
 
 .venueName {
   font-size: 1.2rem;

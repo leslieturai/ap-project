@@ -13,7 +13,7 @@
 }
 
 .favoriteCard {
-  background: white;
+  background: linear-gradient(90deg,rgba(255, 255, 255, 1) 1%, rgba(0, 255, 114, 1) 55%);
   border: 1px solid #ddd;
   border-radius: 12px;
   padding: 1rem;
@@ -36,4 +36,21 @@
   border-radius: 8px;
   text-decoration: none;
   cursor: pointer;
+
+  color: white;
+  font-weight: 800;
+  text-align: center;
+
+  width: 10%;
+}
+
+.favoriteActions a {
+  background-color: #000DFF;
+  filter: drop-shadow(8px 8px 0px #00089D);
+}
+
+.favoriteActions button {
+  background-color: #FF008C;
+  filter: drop-shadow(8px 8px 0px #b30062);
+  
 }

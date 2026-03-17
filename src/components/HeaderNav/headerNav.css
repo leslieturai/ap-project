@@ -8,7 +8,7 @@
   padding: 0.75rem 1rem;
 }
 
-.p-title {
+/* .p-title {
   margin: 0;
   font-weight: 700;
 }
@@ -20,9 +20,28 @@
   border-radius: 0.75rem;
   background: rgb(182, 182, 182);
   display: inline-block;
-}
+} */
 
-.p-title a:hover {
+/* .p-title a:hover {
   background: rgba(148, 136, 136, 0.301);
   color: white;
+} */
+
+.navItem a {
+  font-weight: bold;
+}
+
+.navItem.selected a {
+  color: white !important;
+  border-radius: 1rem;
+    
+  background-color: #000DFF;
+  filter: drop-shadow(9px 9px 0px #00089D);
+
+  padding-left: 2.5rem;
+  padding-right: 2.5rem; 
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+
+
 }

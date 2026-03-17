@@ -113,10 +113,11 @@ export default function OwnerPage() {
       <section className="ownerWrap">
         <h1>Business Dashboard</h1>
 
-        <h2>Create Restaurant</h2>
+
         {err && <p className="ownerError">{err}</p>}
 
         <form onSubmit={handleAddRestaurant} className="ownerForm">
+          <h2>Create Restaurant</h2>
           <input
             type="text"
             placeholder="Restaurant Name"

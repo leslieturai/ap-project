@@ -1,11 +1,28 @@
+/*
+Orange: #FFCA00
+Blue: #000DFF
+Blue shadow: #00089D
+
+Green: #00FF72
+Green shadow: #00873C
+
+Yellow: #FFF200
+
+*/
+
 
 
 #page-header {
-    background-color: grey;
+    background-color: #FFCA00;
 
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
+
+    padding: 1.2rem;
+
+    padding-top: 1.5rem;
+    padding-bottom: 2.5rem;
 }
 
 #page-header > input {
@@ -13,18 +30,42 @@
     margin-left: 10%; /* Offset searchbar */
     border-radius: 1rem;
     border: none;
-    padding: 1rem;
+    
 }
 
 #header-auth {
+    background-color: #00FF72;
+    filter: drop-shadow(9px 9px 0px #00873C);
+
+    padding: 1%;
+
+    border-radius: 1rem;
+
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
+    justify-content: center;
     flex-basis: 10%;
-    gap: 15%;
-    border: 1px solid black;
+    gap: 5%;
+    /* border: 1px solid black; */
 }
 
+#header-auth a {
+    color: black;
+    font-size: 1rem;
+    font-style: italic;
+    font-weight: bold;
+}
+
+#header-auth a:hover {
+    text-decoration: underline;
+}
+
+
+#logo {
+    font-size: 3rem;
+    color: black;
+    filter: drop-shadow(3px 3px 5px #000000);
+}
 
 #header-nav {
     padding: 1rem;

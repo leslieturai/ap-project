@@ -248,45 +248,6 @@ export default function Details() {
           <>
             <h1>{venue?.name || "Restaurant"}</h1>
 
-            <section className="ratingSection">
-              <h3>Your Rating</h3>
-              <div className="ratingButtons">
-                {[1, 2, 3, 4, 5].map((num) => (
-                  <button
-                    key={num}
-                    type="button"
-                    className={
-                      userRating === num
-                        ? "ratingBtn activeRating"
-                        : "ratingBtn"
-                    }
-                    onClick={() => handleRate(num)}
-                    disabled={ratingLoading}
-                  >
-                    {num}★
-                  </button>
-                ))}
-              </div>
-            </section>
-
-            <div className="detailsTopActions">
-              <button
-                type="button"
-                onClick={toggleFavorite}
-                className="favoriteBtn"
-              >
-                {isFavorite ? "★ Remove Favorite" : "☆ Add to Favorites"}
-              </button>
-
-              <button
-                type="button"
-                onClick={handleShare}
-                className="shareBtn"
-              >
-                Share
-              </button>
-            </div>
-
             <section id="venueDesc">
               <h2>Address</h2>
               <p>{venue?.address || "Address not provided."}</p>
@@ -304,49 +265,6 @@ export default function Details() {
                   {venue?.ratingCount ? ` (${venue.ratingCount} ratings)` : ""}
                 </p>
               )}
-            </section>
-
-            {(venue?.about || venue?.offers) && (
-              <section>
-                <h2>More Info</h2>
-
-                {venue?.about && (
-                  <p>
-                    <strong>About:</strong> {venue.about}
-                  </p>
-                )}
-
-                {venue?.offers && (
-                  <p>
-                    <strong>Offers:</strong> {venue.offers}
-                  </p>
-                )}
-              </section>
-            )}
-
-            <section id="mapSection">
-              <hr />
-              <h2>Location</h2>
-              <p>{venue?.address || "Address not provided."}</p>
-
-              <APIProvider apiKey="AIzaSyDy-6rkV4XH2UXvyubcwT3PLH9H-Hef0vI">
-                <Map
-                  defaultZoom={15}
-                  defaultCenter={mapCenter}
-                  mapId={"8e0468e996c5bdf3b9dbf482"}
-                  style={{
-                    width: "100%",
-                    height: "350px",
-                    borderRadius: "12px",
-                  }}
-                >
-                  <AdvancedMarker position={mapCenter}>
-                    <MapMarker frequency={busyAtRandom(1, 3)} />
-                  </AdvancedMarker>
-                </Map>
-              </APIProvider>
-
-              <hr />
             </section>
 
             <section id="offersSection">
@@ -400,6 +318,93 @@ export default function Details() {
 
               <hr />
             </section>
+            
+
+            <section className="ratingSection">
+              <h3>Your Rating</h3>
+              <div className="ratingButtons">
+                {[1, 2, 3, 4, 5].map((num) => (
+                  <button
+                    key={num}
+                    type="button"
+                    className={
+                      userRating === num
+                        ? "ratingBtn activeRating"
+                        : "ratingBtn"
+                    }
+                    onClick={() => handleRate(num)}
+                    disabled={ratingLoading}
+                  >
+                    {num}★
+                  </button>
+                ))}
+              </div>
+            </section>
+
+            <div className="detailsTopActions">
+              <button
+                type="button"
+                onClick={toggleFavorite}
+                className="favoriteBtn"
+              >
+                {isFavorite ? "★ Remove Favorite" : "☆ Add to Favorites"}
+              </button>
+
+              <button
+                type="button"
+                onClick={handleShare}
+                className="shareBtn"
+              >
+                Share
+              </button>
+            </div>
+
+            
+
+            {(venue?.about || venue?.offers) && (
+              <section>
+                <h2>More Info</h2>
+
+                {venue?.about && (
+                  <p>
+                    <strong>About:</strong> {venue.about}
+                  </p>
+                )}
+
+                {venue?.offers && (
+                  <p>
+                    <strong>Offers:</strong> {venue.offers}
+                  </p>
+                )}
+              </section>
+            )}
+
+            <section id="mapSection">
+              <hr />
+              <h2>Location</h2>
+              <p>{venue?.address || "Address not provided."}</p>
+
+              <APIProvider apiKey="AIzaSyDy-6rkV4XH2UXvyubcwT3PLH9H-Hef0vI">
+                <Map
+                  defaultZoom={15}
+                  defaultCenter={mapCenter}
+                  mapId={"8e0468e996c5bdf3b9dbf482"}
+                  style={{
+                    width: "100%",
+                    height: "750px",
+                    borderRadius: "12px",
+                  }}
+                >
+                  <AdvancedMarker position={mapCenter}>
+                    <MapMarker frequency={busyAtRandom(1, 3)} />
+                  </AdvancedMarker>
+                </Map>
+              </APIProvider>
+
+              <hr />
+            </section>
+
+
           </>
         )}
       </section>

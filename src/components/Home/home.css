@@ -3,7 +3,7 @@
 #homeSection {
     width: 80%;
     margin: auto;
-    margin-top: 2%;
+    margin-top: 0%;
 }
 .venueGrid {
   display: grid;
@@ -11,6 +11,18 @@
   gap: 1rem;
   margin-top: 1rem;
 }
+
+#home-colour-block {
+  width: 95%;
+
+  background-color: #FFF200;
+  border-radius: 1rem;
+
+  padding: 1rem;
+
+  margin-bottom: 1%;
+}
+
 .filterRow {
   display: flex;
   flex-wrap: wrap;
@@ -28,16 +40,15 @@
 
 .filterBtn {
   padding: 0.55rem 0.8rem;
-  border-radius: 0.75rem;
-  border: none;
-  cursor: pointer;
-  background: rgb(182, 182, 182);
+  border-radius: 1.2rem;
   font-weight: bold;
-}
 
-.filterBtn.active {
-  background: black;
-  color: white;
+  background-color: rgba(0, 0, 0, 0) !important;
+
+  border: 5px solid black;
+
+  font-weight: bold !important;
+  font-size: 1rem;
 }
 
 .venueList {
@@ -58,11 +69,12 @@
 .searchInput {
   padding: 0.8rem 1rem;
   border-radius: 999px;
-  border: 1px solid #ccc;
+  border: 2px solid black;
   min-width: 240px;
 }
 
-.filterBtn,
+
+/* .filterBtn,
 .filterSelect {
   padding: 0.7rem 1rem;
   border-radius: 999px;
@@ -70,13 +82,21 @@
   background: white;
   cursor: pointer;
   font-size: 0.95rem;
-}
+} */
 
 .filterBtn.active {
-  font-weight: 700;
-  border: 2px solid #222;
+  border: 5px solid #000DFF;
 }
 
 .filterSelect {
   outline: none;
+  background-color: rgba(0, 0, 0, 0) !important;
+  width: 10%;
+  font-size: 1rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  text-align: center;
+  appearance: none;
+  border: 5px solid black;
+  border-radius: 1.5rem;
 }

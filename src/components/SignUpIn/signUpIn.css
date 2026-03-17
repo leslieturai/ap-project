@@ -1,13 +1,15 @@
 #authSection {
-  background-color: grey;
+  background-color: #00FF72;
+  filter: drop-shadow(25px 25px 0px #00873C);
+  
   border-radius: 1rem;
 
   margin: auto;
   padding: 1rem;
 
-  width: 40%;
+  width: 50%;
   margin-top: 10%;
-  height: 35vh;
+  height: 50vh;
 
   display: flex;
   flex-direction: column;
@@ -16,7 +18,8 @@
 }
 
 #authSection input {
-  padding: 0.8rem;
+  padding: 1rem;
+  font-size: 1.2rem;
   width: 70%;
   border-radius: 1rem;
   border: none;
@@ -26,10 +29,10 @@
 
 #authSection button {
   width: 75%;
-  color: black;
+  color: white;
   font-weight: bold;
   font-size: 1.8rem;
-  padding: 0.2rem;
+  padding: 1rem;
   border-radius: 1rem;
   border: none;
   margin-top: 2%;
@@ -52,13 +55,18 @@
   margin-bottom: 1%;
 }
 
-#preAuthSection a {
-  background-color: rgb(182, 182, 182);
+#preAuthSection a:first-child {
+  background: #00873C;
+}
 
+#preAuthSection a:nth-child(2) {
+  background: #000DFF;
+}
+
+#preAuthSection a {
   padding: 1rem;
   border-radius: 1rem;
   font-size: 1.2rem;
-
   width: 40%;
 }
 
@@ -74,7 +82,7 @@
 .auth-toggle {
   width: 75%;
   display: flex;
-  gap: 0.5rem;
+  gap: 1.5rem;
   margin-top: 0.5rem;
 }
 
@@ -84,18 +92,20 @@
   font-size: 1rem;
   padding: 0.6rem;
   margin-top: 0;
-  background: rgb(182, 182, 182);
-  cursor: pointer;
+/*   background: rgb(182, 182, 182); */
+  background: #00873C;
+    cursor: pointer;
 }
 
 /* active mode button */
 .auth-toggle button.active {
-  background: rgba(168, 197, 214, 0.308);
-  color: white;
+  background: #000DFF;
+  filter: drop-shadow(10px 10px 0px #00089D);
 }
 
 .primary-btn {
   cursor: pointer;
+  background: #000DFF;
 }
 
 /* error message */
@@ -130,7 +140,7 @@
 
 .auth-role-buttons {
   display: flex;
-  gap: 0.5rem;
+  gap: 1.5rem;
   width: 100%;
 }
 
@@ -139,14 +149,15 @@
   font-size: 1rem;
   padding: 0.6rem;
   margin-top: 0;
-  background: rgb(182, 182, 182);
+  background: none;
   cursor: pointer;
   border-radius: 1rem;
+  background: #00873C;
 }
 
 .auth-role-buttons button.active {
-  background: rgba(168, 197, 214, 0.308);
-  color: white;
+  background: #000DFF;
+  filter: drop-shadow(10px 10px 0px #00089D);
 }
 .reset-btn {
   width: 75%;
@@ -155,7 +166,7 @@
   border-radius: 1rem;
   border: none;
   margin-top: 0.5rem;
-  background: rgb(150, 150, 150);
+  background: #00873C;
   cursor: pointer;
 }
 

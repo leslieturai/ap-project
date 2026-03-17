@@ -133,55 +133,57 @@ export default function Deals() {
       <Header />
 
       <section className="dealsPage">
-        <h1>Events & Deals (Calgary)</h1>
 
-        <div className="dealsControls">
-          <input
-            className="searchInput"
-            type="text"
-            placeholder="Search by venue or event..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
+        <div id="home-colour-block">
+            <h1>Events & Deals (Calgary)</h1>
+            <div className="dealsControls">
+            <input
+              className="searchInput"
+              type="text"
+              placeholder="Search by venue or event..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
 
-          <select
-            className="daySelect"
-            value={day}
-            onChange={(e) => setDay(e.target.value)}
-          >
-            <option value="All">All days</option>
-            {DAYS.map((d) => (
-              <option key={d} value={d}>{d}</option>
-            ))}
-          </select>
+            <select
+              className="daySelect"
+              value={day}
+              onChange={(e) => setDay(e.target.value)}
+            >
+              <option value="All">All days</option>
+              {DAYS.map((d) => (
+                <option key={d} value={d}>{d}</option>
+              ))}
+            </select>
 
-          <button
-            type="button"
-            className={showEvents ? "filterBtn active" : "filterBtn"}
-            onClick={() => setShowEvents((p) => !p)}
-          >
-            Events
-          </button>
+            <button
+              type="button"
+              className={showEvents ? "filterBtn active" : "filterBtn"}
+              onClick={() => setShowEvents((p) => !p)}
+            >
+              Events
+            </button>
 
-          <button
-            type="button"
-            className={showHappyHour ? "filterBtn active" : "filterBtn"}
-            onClick={() => setShowHappyHour((p) => !p)}
-          >
-            Happy Hour
-          </button>
+            <button
+              type="button"
+              className={showHappyHour ? "filterBtn active" : "filterBtn"}
+              onClick={() => setShowHappyHour((p) => !p)}
+            >
+              Happy Hour
+            </button>
 
-          <button
-            type="button"
-            className={showSpecials ? "filterBtn active" : "filterBtn"}
-            onClick={() => setShowSpecials((p) => !p)}
-          >
-            Daily Specials
-          </button>
+            <button
+              type="button"
+              className={showSpecials ? "filterBtn active" : "filterBtn"}
+              onClick={() => setShowSpecials((p) => !p)}
+            >
+              Daily Specials
+            </button>
 
-          <button type="button" className="filterBtn" onClick={clearFilters}>
-            Clear
-          </button>
+            <button type="button" className="filterBtn" onClick={clearFilters}>
+              Clear
+            </button>
+          </div>
         </div>
 
         {loading ? (
