@@ -1,7 +1,9 @@
 
 
 .venueCard {
-    border: 5px solid #FFCA00;
+    border: 8px solid #FFCA00;
+    -webkit-box-shadow: 17px 10px 0px 5px #7E6500; 
+    box-shadow: 17px 10px 0px 5px #7E6500;
     border-radius: 1rem;
     width: 10%;
     padding: 0.5rem;

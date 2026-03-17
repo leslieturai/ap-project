@@ -5,6 +5,11 @@
   align-items: center;
 }
 
+.ownerWrap h1 {
+  margin-top: 2%;
+  margin-bottom: 1%;
+}
+
 .ownerError {
   color: crimson;
   font-weight: bold;
@@ -31,6 +36,7 @@
   border-radius: 0.75rem;
   border: 1px solid #ccc;
   width: 90%;
+  font-size: 1.2rem !important;
 }
 
 .ownerForm textarea {
@@ -59,13 +65,19 @@
   background-color: #000DFF;
   
   color: white;
-  font-weight: bold;
+  font-weight: 800;
   font-size: 1.5rem;
-  font-style: italic;
+  
 }
 
 .ownerHr {
-  margin: 2rem 0;
+  margin-top: 5%;
+  margin-left: 5%;
+}
+
+.ownerWrap h2 {
+  margin-top: 1%;
+  margin-bottom: 1%;
 }
 
 .ownerList {
@@ -80,7 +92,11 @@
 
 .ownerList p, strong {
   font-weight: bold;
-  color: white;
+  color: white !important;
+}
+
+.ownerList strong {
+  font-size: 1.2rem;
 }
 
 .ownerCard {
@@ -91,6 +107,7 @@
   border-radius: 0.75rem;
   padding: 1rem;
 }
+
 
 .ownerAddr {
   margin: 0.25rem 0 0 0;

@@ -84,8 +84,8 @@ hr {
 }
 
 .detailsTopActions button:nth-child(1) {
-  background-color: #000DFF;
-  filter: drop-shadow(10px 10px 0px #00089D);
+  background-color: #FF008C;
+  filter: drop-shadow(8px 8px 0px #b30062);
 }
 
 .detailsTopActions button:nth-child(2) {
