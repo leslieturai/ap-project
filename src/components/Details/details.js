@@ -253,17 +253,21 @@ export default function Details() {
               <p>{venue?.address || "Address not provided."}</p>
 
               {venue?.priceLevel && (
-                <p>
-                  <strong>Price:</strong>{" "}
-                  <span className="venuePCost">{venue.priceLevel}</span>
-                </p>
+                <div id="priceDiv">
+                  <p>
+                    Price:                  
+                  </p>
+                  <p>
+                    {venue.priceLevel}
+                  </p>
+                </div>
               )}
 
               {typeof venue?.rating === "number" && (
-                <p>
-                  <strong>Rating:</strong> {venue.rating}
-                  {venue?.ratingCount ? ` (${venue.ratingCount} ratings)` : ""}
-                </p>
+                <div id="ratingDiv">
+                    <p>Rating:</p>
+                    <p> {venue?.ratingCount ? ` (${venue.ratingCount} ratings)` : "No ratings yet"}</p>
+                </div>
               )}
             </section>
 
@@ -296,7 +300,7 @@ export default function Details() {
                 events.length === 0 ? (
                   <p>Events are available, but none were added yet.</p>
                 ) : (
-                  <ul style={{ marginTop: "0.5rem" }}>
+                  <ul id="eventList" style={{ marginTop: "0.5rem" }}>
                     {events.map((ev, idx) => (
                       <li key={idx} style={{ marginBottom: "0.75rem" }}>
                         <strong>{ev.title || "Event"}</strong>

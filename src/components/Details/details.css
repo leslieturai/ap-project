@@ -14,6 +14,21 @@ hr {
   color: black !important;
 }
 
+#priceDiv, #ratingDiv {
+  width: 100%;
+    display: flex;
+  gap: 1%;
+}
+
+#priceDiv p:nth-child(2) {
+  color: #1F9D05 !important;
+  font-weight: bold;
+}
+
+#priceDiv p:nth-child(1), #ratingDiv p:nth-child(1) {
+  font-weight: 700;
+}
+
 #detailSection {
     display: flex;
     flex-direction: column;
@@ -31,6 +46,18 @@ hr {
 #detailSection > section {
     /* border: 1px solid black; */
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+/* #eventList {
+
+}
+ */
+
+#eventList strong {
+  color: black !important;
 }
 
 

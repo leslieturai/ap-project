@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import Header from "../Header/Header";
+import PageFooter from "../Footer/pageFooter"
 import "./deals.css";
 
 import { db } from "../../firebase";
@@ -215,6 +216,7 @@ export default function Deals() {
           </div>
         )}
       </section>
+      <PageFooter/>
     </>
   );
 }

@@ -5,6 +5,7 @@ import "./home.css";
 import "../baseStyles.css";
 import { auth, db } from "../../firebase";
 import { collection, getDocs, query, where, doc, getDoc } from "firebase/firestore";
+import PageFooter from "../Footer/pageFooter";
 
 export default function Home() {
   const [venues, setVenues] = useState([]);
@@ -311,6 +312,7 @@ export default function Home() {
           </div>
         )}
       </section>
+      <PageFooter/>
     </>
   );
 }

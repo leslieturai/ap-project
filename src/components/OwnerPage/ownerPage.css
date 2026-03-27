@@ -40,7 +40,7 @@
 }
 
 .ownerForm textarea {
-  width: 92%;
+  width: 90%;
   border: none;
   border-style: none;
   border-radius: 1rem;
@@ -48,7 +48,7 @@
 
 .ownerForm select {
   padding: 1rem;
-  width: 92%;
+  width: 93%;
   border: none;
   border-style: none;
   border-radius: 1rem;

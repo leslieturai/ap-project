@@ -86,6 +86,8 @@
 
 .filterBtn.active {
   border: 5px solid #000DFF;
+  background-color: rgba(0, 13, 255, 1) !important;
+  color: white;  
 }
 
 .filterSelect {

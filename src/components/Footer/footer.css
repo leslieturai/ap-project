@@ -1,0 +1,18 @@
+
+#footerSection {
+    margin-top: 5%;
+    height: 20vh;
+
+    background-color: #FFCA00;
+    padding: 1%;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: flex-end;
+}
+
+#footerSection p {
+    font-size: 1.5rem;
+    font-weight: bold;
+    font-style: italic;
+}
