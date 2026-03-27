@@ -8,7 +8,7 @@ function renderStars(rating) {
 
 export default function VenueCard({ venue }) {
   if (!venue) return null;
-
+  // Conditionally rendering venue properties in component
   return (
     <div className="venueCard">
       <Link className="venueName" to={`/details/${venue.id}`}>

@@ -11,11 +11,12 @@ const DAYS = [
 ];
 
 export default function Deals() {
+  // Venues
   const [venues, setVenues] = useState([]);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState("");
 
-  // filters
+  // Filters
   const [day, setDay] = useState("All");
   const [showEvents, setShowEvents] = useState(true);
   const [showHappyHour, setShowHappyHour] = useState(true);
@@ -23,7 +24,7 @@ export default function Deals() {
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    async function load() {
+    async function load() { // Getting venues from firebase
       setErr("");
       setLoading(true);
 
@@ -45,7 +46,7 @@ export default function Deals() {
     load();
   }, []);
 
-  const items = useMemo(() => {
+  const items = useMemo(() => { // Formatting and pushing venues to list
     const list = [];
 
     for (const v of venues) {
@@ -103,7 +104,7 @@ export default function Deals() {
   const filtered = useMemo(() => {
     const s = search.trim().toLowerCase();
 
-    return items.filter((it) => {
+    return items.filter((it) => { // Filtering
       if (!showEvents && it.type === "Event") return false;
       if (!showHappyHour && it.type === "Happy Hour") return false;
       if (!showSpecials && it.type === "Daily Specials") return false;
@@ -194,7 +195,7 @@ export default function Deals() {
         ) : filtered.length === 0 ? (
           <p>No matches.</p>
         ) : (
-          <div className="dealsList">
+          <div className="dealsList"> {/* Mapping and rendering venues from list */}
             {filtered.map((it, idx) => (
               <div className="dealCard" key={`${it.venueId}-${it.type}-${idx}`}>
                 <div className="dealTop">

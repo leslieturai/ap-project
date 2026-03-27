@@ -45,13 +45,13 @@ export default function Listings() {
     load();
   }, []);
 
-  const restaurantById = useMemo(() => {
+  const restaurantById = useMemo(() => { // Getting venues by id
     const map = new Map();
     restaurants.forEach((r) => map.set(r.id, r));
     return map;
   }, [restaurants]);
 
-  const filtered = useMemo(() => {
+  const filtered = useMemo(() => { // Handling filtering
     return items
       .filter((i) => i.dayOfWeek === day)
       .filter((i) => i.type === type)

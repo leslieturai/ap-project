@@ -1,5 +1,4 @@
 
-
 #homeSection {
     width: 80%;
     margin: auto;
@@ -72,17 +71,6 @@
   border: 2px solid black;
   min-width: 240px;
 }
-
-
-/* .filterBtn,
-.filterSelect {
-  padding: 0.7rem 1rem;
-  border-radius: 999px;
-  border: 1px solid #ccc;
-  background: white;
-  cursor: pointer;
-  font-size: 0.95rem;
-} */
 
 .filterBtn.active {
   border: 5px solid #000DFF;

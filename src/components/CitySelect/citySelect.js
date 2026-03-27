@@ -9,6 +9,7 @@ import "./citySelect.css";
 
 export default function CitySelect() {
   const navigate = useNavigate();
+  // States for user and error handling
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -19,7 +20,7 @@ export default function CitySelect() {
   const [cityId, setCityId] = useState(CALGARY.id);
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, async (u) => {
+    const unsub = onAuthStateChanged(auth, async (u) => { // Logging user in
       if (!u) {
         navigate("/sign-up-in");
         return;
@@ -33,7 +34,7 @@ export default function CitySelect() {
         const data = snap.data();
         if (data?.cityId) setCityId(data.cityId);
       } else {
-        await setDoc(userRef, { role: "user", cityId: "", createdAt: Date.now() });
+        await setDoc(userRef, { role: "user", cityId: "", createdAt: Date.now() }); // Signing up user
       }
 
       setLoading(false);
@@ -42,7 +43,7 @@ export default function CitySelect() {
     return () => unsub();
   }, [navigate]);
 
-  async function handleSave() {
+  async function handleSave() { // Handling one test city - Calgary
     if (!user) return;
     setErr("");
     setSaving(true);

@@ -1,13 +1,6 @@
 import { doc, getDoc, setDoc } from "firebase/firestore";
 
-/**
- * users/{uid} = {
- *   role: "customer" | "owner",
- *   cityId: "calgary" | "",
- *   createdAt: number
- * }
- */
-
+// Firebase functions to get user profiles and verify them
 export async function getUserProfile(db, uid) {
   const ref = doc(db, "users", uid);
   const snap = await getDoc(ref);

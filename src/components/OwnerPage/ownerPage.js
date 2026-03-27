@@ -13,7 +13,7 @@ export default function OwnerPage() {
 
   const [user, setUser] = useState(null);
   const [restaurants, setRestaurants] = useState([]);
-
+  // States to handle form submission for new venue per owner
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [priceLevel, setPriceLevel] = useState("$");
@@ -38,7 +38,7 @@ export default function OwnerPage() {
     return () => unsub();
   }, [navigate]);
 
-  async function loadRestaurants(uid) {
+  async function loadRestaurants(uid) { // Getting venues the owner may already have, to render them
     try {
       const q = query(collection(db, "restaurants"), where("ownerUid", "==", uid));
       const snap = await getDocs(q);
@@ -48,7 +48,7 @@ export default function OwnerPage() {
     }
   }
 
-  async function handleAddRestaurant(e) {
+  async function handleAddRestaurant(e) { // Handling inputs, storing to firebase
     e.preventDefault();
     setErr("");
 

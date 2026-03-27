@@ -8,6 +8,7 @@ import { collection, getDocs, query, where, doc, getDoc } from "firebase/firesto
 import PageFooter from "../Footer/pageFooter";
 
 export default function Home() {
+  // States to handle venues loaded from firebase and filter them
   const [venues, setVenues] = useState([]);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState("");
@@ -26,14 +27,14 @@ export default function Home() {
   const [eventType, setEventType] = useState("");
 
   useEffect(() => {
-    async function loadUserCityAndRestaurants() {
+    async function loadUserCityAndRestaurants() { // Getting user's city (Calgary) and venues in that city from firebase
       setErr("");
       setLoading(true);
 
       try {
         const user = auth.currentUser;
 
-        if (!user) {
+        if (!user) {  // Error handling
           setErr("You must be logged in to view restaurants.");
           setVenues([]);
           return;
@@ -101,7 +102,7 @@ export default function Home() {
       return;
     }
 
-    if (!navigator.geolocation) {
+    if (!navigator.geolocation) { // Error handling for nearest to user
       alert("Geolocation is not supported by your browser.");
       return;
     }
@@ -120,7 +121,7 @@ export default function Home() {
     );
   }
 
-  const filtered = useMemo(() => {
+  const filtered = useMemo(() => { // Getting and formatting venue data from firebase to render
     const s = search.trim().toLowerCase();
 
     let results = venues.filter((v) => {
@@ -134,14 +135,14 @@ export default function Home() {
       }
 
       if (eventType) {
-        const tags = Array.isArray(v.eventTags) ? v.eventTags : [];
+        const tags = Array.isArray(v.eventTags) ? v.eventTags : []; // Handling filters
         if (!tags.includes(eventType)) return false;
       }
 
       return true;
     });
-
-    if (sortByDistance && userLocation) {
+    // Handling filters
+    if (sortByDistance && userLocation) { 
       results = results
         .map((v) => {
           const lat = Number(v?.coordinates?.[0]);
@@ -193,7 +194,7 @@ export default function Home() {
     sortNewest,
   ]);
 
-  function clearFilters() {
+  function clearFilters() { // Resetting filters
     setSearch("");
     setFilterHappyHour(false);
     setFilterDailySpecials(false);

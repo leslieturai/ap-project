@@ -4,6 +4,9 @@ import { auth, db } from "../../firebase";
 import { getUserProfile } from "../../utils/userProfile";
 import { useNavigate } from "react-router-dom";
 
+// Function to navigate the app depending on the users's role
+// If they are an owner, they will be redirected to the owner functionality
+// If a cusomer, then the customer functionality
 export default function RequireRole({ role, children }) {
   const navigate = useNavigate();
   const [status, setStatus] = useState("loading");

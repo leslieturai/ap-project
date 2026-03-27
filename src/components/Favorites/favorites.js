@@ -12,7 +12,7 @@ export default function Favorites() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    async function loadFavorites() {
+    async function loadFavorites() { // Getting favourites from firebase based on user id
       setLoading(true);
       setErr("");
 
@@ -45,7 +45,7 @@ export default function Favorites() {
     loadFavorites();
   }, []);
 
-  async function removeFavorite(restaurantId) {
+  async function removeFavorite(restaurantId) { // Removing favourites
     const user = auth.currentUser;
 
     if (!user) return;

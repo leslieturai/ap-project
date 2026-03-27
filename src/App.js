@@ -1,6 +1,7 @@
 import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { APIProvider } from "@vis.gl/react-google-maps";
+import { APIProvider } from "@vis.gl/react-google-maps"; // Google Maps API Provider
+/* Page imports */
 import Home from './components/Home/home.js';
 import SignUpIn from './components/SignUpIn/signUpIn.js';
 import Details from './components/Details/details.js';

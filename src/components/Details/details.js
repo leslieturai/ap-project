@@ -15,8 +15,8 @@ import {
   updateDoc,
 } from "firebase/firestore";
 
-import { APIProvider, Map, AdvancedMarker } from "@vis.gl/react-google-maps";
-import MapMarker from "../MapMarker/mapMarker";
+import { APIProvider, Map, AdvancedMarker } from "@vis.gl/react-google-maps"; // Getting GoogleMaps
+import MapMarker from "../MapMarker/mapMarker"; // Getting Google Maps marker
 
 export default function Details() {
   const { id } = useParams();
@@ -30,8 +30,10 @@ export default function Details() {
   const [userRating, setUserRating] = useState(0);
   const [ratingLoading, setRatingLoading] = useState(false);
 
+
+  // Loading venue from firebase and error-handling
   useEffect(() => {
-    async function loadVenue() {
+    async function loadVenue() { 
       setErr("");
       setLoading(true);
 
@@ -61,6 +63,8 @@ export default function Details() {
     loadVenue();
   }, [id]);
 
+
+  // Functions to add a venue to favourites
   useEffect(() => {
     const user = auth.currentUser;
 
@@ -78,6 +82,8 @@ export default function Details() {
     return () => unsubscribe();
   }, [id]);
 
+
+  // Function to load ratings for a venue
   useEffect(() => {
     async function loadUserRating() {
       const user = auth.currentUser;
@@ -150,7 +156,7 @@ export default function Details() {
       console.error("Share failed:", e);
     }
   }
-
+  // Function to handle rating a venue with firebase functions
   async function handleRate(newRating) {
     const user = auth.currentUser;
 
@@ -202,7 +208,7 @@ export default function Details() {
       setRatingLoading(false);
     }
   }
-
+  // Locations are assigned a busyness at random, colour modified on map to reflect its rating 
   function busyAtRandom(min, max) {
     const tempNum = Math.floor(Math.random() * (max - min)) + min;
     if (tempNum === 1) return "Empty";

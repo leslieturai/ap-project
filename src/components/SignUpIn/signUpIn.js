@@ -14,7 +14,7 @@ import { ensureUserProfile, getUserProfile } from "../../utils/userProfile";
 
 export default function SignUpIn() {
   const navigate = useNavigate();
-
+  // States to handle logins and user info
   const [mode, setMode] = useState("login");
   const [accountType, setAccountType] = useState("customer");
 
@@ -30,7 +30,7 @@ export default function SignUpIn() {
     else navigate("/city-select");
   }
 
-  function friendlyError(e) {
+  function friendlyError(e) { // Error handling
     const code = e?.code || "";
     if (code === "auth/invalid-email") return "Invalid email address.";
     if (code === "auth/weak-password") return "Password must be at least 6 characters.";
