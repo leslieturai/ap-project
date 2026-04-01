@@ -14,7 +14,6 @@ export default function CitySelect() {
   const [saving, setSaving] = useState(false);
   const [err, setErr] = useState("");
 
-  // Only one testable city:
   const CALGARY = { id: "calgary", name: "Calgary, Alberta, Canada" };
   const [cityId, setCityId] = useState(CALGARY.id);
 
@@ -24,6 +23,7 @@ export default function CitySelect() {
         navigate("/sign-up-in");
         return;
       }
+
       setUser(u);
 
       const userRef = doc(db, "users", u.uid);
@@ -33,7 +33,11 @@ export default function CitySelect() {
         const data = snap.data();
         if (data?.cityId) setCityId(data.cityId);
       } else {
-        await setDoc(userRef, { role: "user", cityId: "", createdAt: Date.now() });
+        await setDoc(userRef, {
+          role: "user",
+          cityId: "",
+          createdAt: Date.now(),
+        });
       }
 
       setLoading(false);
@@ -44,14 +48,16 @@ export default function CitySelect() {
 
   async function handleSave() {
     if (!user) return;
+
     setErr("");
     setSaving(true);
 
     try {
       await updateDoc(doc(db, "users", user.uid), {
-        cityId: cityId, 
+        cityId: cityId,
       });
-      navigate("/"); 
+
+      navigate("/");
     } catch (e) {
       setErr(e?.message || "Could not save city.");
     } finally {
@@ -59,24 +65,54 @@ export default function CitySelect() {
     }
   }
 
-  if (loading) return <div style={{ padding: 16 }}>Loading...</div>;
+  if (loading) {
+    return (
+      <>
+        <Header />
+        <section className="cityPage">
+          <div className="cityCard">
+            <p>Loading...</p>
+          </div>
+        </section>
+      </>
+    );
+  }
 
   return (
     <>
       <Header />
-      <section id="citySelectSection">
-        <h1>Select your city</h1>
-       
 
-        <select value={cityId} onChange={(e) => setCityId(e.target.value)} disabled>
-          <option value={CALGARY.id}>{CALGARY.name}</option>
-        </select>
+      <section className="cityPage">
+        <section id="citySelectSection">
+          <div className="cityHeading">
+            <h1>Select your city</h1>
+            <p>
+              Choose your city to browse restaurants, deals, and events near you.
+            </p>
+          </div>
 
-        <button onClick={handleSave} disabled={saving}>
-          {saving ? "Saving..." : "Continue"}
-        </button>
+          <div className="cityFieldGroup">
+            <label htmlFor="citySelect">City</label>
+            <select
+              id="citySelect"
+              value={cityId}
+              onChange={(e) => setCityId(e.target.value)}
+              disabled
+            >
+              <option value={CALGARY.id}>{CALGARY.name}</option>
+            </select>
+          </div>
 
-        {err && <p style={{ color: "crimson" }}>{err}</p>}
+          <p className="cityHint">
+            Calgary is the current demo city available in EvoEats.
+          </p>
+
+          <button onClick={handleSave} disabled={saving} className="cityContinueBtn">
+            {saving ? "Saving..." : "Continue"}
+          </button>
+
+          {err && <p className="cityError">{err}</p>}
+        </section>
       </section>
     </>
   );

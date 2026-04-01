@@ -14,15 +14,9 @@ export default function Home() {
   const [city, setCity] = useState("");
   const [userLocation, setUserLocation] = useState(null);
   const [sortByDistance, setSortByDistance] = useState(false);
-  const [sortNewest, setSortNewest] = useState(false);
 
   const [search, setSearch] = useState("");
-  const [filterHappyHour, setFilterHappyHour] = useState(false);
-  const [filterDailySpecials, setFilterDailySpecials] = useState(false);
-  const [filterEvents, setFilterEvents] = useState(false);
-
   const [foodCategory, setFoodCategory] = useState("");
-  const [eventType, setEventType] = useState("");
 
   useEffect(() => {
     async function loadUserCityAndRestaurants() {
@@ -124,17 +118,9 @@ export default function Home() {
 
     let results = venues.filter((v) => {
       if (s && !(v.name || "").toLowerCase().includes(s)) return false;
-      if (filterHappyHour && !v.hasHappyHour) return false;
-      if (filterDailySpecials && !v.hasDailySpecials) return false;
-      if (filterEvents && !v.hasEvents) return false;
 
       if (foodCategory && (v.foodCategory || "").toLowerCase() !== foodCategory) {
         return false;
-      }
-
-      if (eventType) {
-        const tags = Array.isArray(v.eventTags) ? v.eventTags : [];
-        if (!tags.includes(eventType)) return false;
       }
 
       return true;
@@ -170,39 +156,9 @@ export default function Home() {
       });
     }
 
-    if (sortNewest) {
-      results = [...results].sort((a, b) => {
-        const aDate = Number(a.createdAt) || 0;
-        const bDate = Number(b.createdAt) || 0;
-        return bDate - aDate;
-      });
-    }
-
     return results;
-  }, [
-    venues,
-    search,
-    filterHappyHour,
-    filterDailySpecials,
-    filterEvents,
-    foodCategory,
-    eventType,
-    sortByDistance,
-    userLocation,
-    sortNewest,
-  ]);
+  }, [venues, search, foodCategory, sortByDistance, userLocation]);
 
-  function clearFilters() {
-    setSearch("");
-    setFilterHappyHour(false);
-    setFilterDailySpecials(false);
-    setFilterEvents(false);
-    setFoodCategory("");
-    setEventType("");
-    setSortByDistance(false);
-    setSortNewest(false);
-    setUserLocation(null);
-  }
 
   const cityTitle = city
     ? city.charAt(0).toUpperCase() + city.slice(1)
@@ -224,46 +180,6 @@ export default function Home() {
             onChange={(e) => setSearch(e.target.value)}
           />
 
-          <button
-            type="button"
-            className={sortByDistance ? "filterBtn active" : "filterBtn"}
-            onClick={handleNearMe}
-          >
-            Near Me
-          </button>
-
-          <button
-            type="button"
-            className={sortNewest ? "filterBtn active" : "filterBtn"}
-            onClick={() => setSortNewest((p) => !p)}
-          >
-            Newest
-          </button>
-
-          <button
-            type="button"
-            className={filterHappyHour ? "filterBtn active" : "filterBtn"}
-            onClick={() => setFilterHappyHour((p) => !p)}
-          >
-            Happy Hour
-          </button>
-
-          <button
-            type="button"
-            className={filterDailySpecials ? "filterBtn active" : "filterBtn"}
-            onClick={() => setFilterDailySpecials((p) => !p)}
-          >
-            Daily Specials
-          </button>
-
-          <button
-            type="button"
-            className={filterEvents ? "filterBtn active" : "filterBtn"}
-            onClick={() => setFilterEvents((p) => !p)}
-          >
-            Events
-          </button>
-
           <select
             className="filterSelect"
             value={foodCategory}
@@ -278,21 +194,15 @@ export default function Home() {
             <option value="cafe">Cafe</option>
           </select>
 
-          <select
-            className="filterSelect"
-            value={eventType}
-            onChange={(e) => setEventType(e.target.value)}
+          <button
+            type="button"
+            className={sortByDistance ? "filterBtn active" : "filterBtn"}
+            onClick={handleNearMe}
           >
-            <option value="">All Event Types</option>
-            <option value="live-music">Live Music</option>
-            <option value="trivia">Trivia</option>
-            <option value="sports">Sports</option>
-            <option value="dj">DJ</option>
-          </select>
-
-          <button type="button" className="filterBtn" onClick={clearFilters}>
-            Clear
+            Near Me
           </button>
+
+       
         </div>
 
         {loading ? (

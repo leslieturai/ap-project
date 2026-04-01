@@ -7,6 +7,16 @@ import { auth, db } from "../../firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
 
+const defaultHours = {
+  monday: { open: "", close: "", closed: false },
+  tuesday: { open: "", close: "", closed: false },
+  wednesday: { open: "", close: "", closed: false },
+  thursday: { open: "", close: "", closed: false },
+  friday: { open: "", close: "", closed: false },
+  saturday: { open: "", close: "", closed: false },
+  sunday: { open: "", close: "", closed: false },
+};
+
 export default function OwnerDetails() {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -21,6 +31,10 @@ export default function OwnerDetails() {
 
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
+  const [phone, setPhone] = useState("");
+  const [website, setWebsite] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
+  const [hours, setHours] = useState(defaultHours);
   const [priceLevel, setPriceLevel] = useState("$");
   const [about, setAbout] = useState("");
   const [offers, setOffers] = useState("");
@@ -75,6 +89,10 @@ export default function OwnerDetails() {
 
           setName(data.name || "");
           setAddress(data.address || "");
+          setPhone(data.phone || "");
+          setWebsite(data.website || "");
+          setImageUrl(data.imageUrl || "");
+          setHours(data.hours || defaultHours);
           setPriceLevel(data.priceLevel || "$");
           setAbout(data.about || "");
           setOffers(data.offers || "");
@@ -102,6 +120,25 @@ export default function OwnerDetails() {
     return () => unsub();
   }, [navigate, id]);
 
+  function normalizeUrl(url) {
+    const trimmed = url.trim();
+    if (!trimmed) return "";
+    if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
+      return trimmed;
+    }
+    return `https://${trimmed}`;
+  }
+
+  function handleHoursChange(day, field, value) {
+    setHours((prev) => ({
+      ...prev,
+      [day]: {
+        ...prev[day],
+        [field]: value,
+      },
+    }));
+  }
+
   async function handleSave(e) {
     e.preventDefault();
     if (!venue || !user) return;
@@ -119,6 +156,10 @@ export default function OwnerDetails() {
       await updateDoc(doc(db, "restaurants", venue.id), {
         name: name.trim(),
         address: address.trim(),
+        phone: phone.trim(),
+        website: normalizeUrl(website),
+        imageUrl: normalizeUrl(imageUrl),
+        hours,
         priceLevel,
         about,
         offers,
@@ -194,6 +235,86 @@ export default function OwnerDetails() {
                 disabled={saving}
               />
             </label>
+
+            <label>
+              Phone
+              <input
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                disabled={saving}
+              />
+            </label>
+
+            <label>
+              Website
+              <input
+                value={website}
+                onChange={(e) => setWebsite(e.target.value)}
+                disabled={saving}
+              />
+            </label>
+
+            <label>
+              Image URL
+              <input
+                value={imageUrl}
+                onChange={(e) => setImageUrl(e.target.value)}
+                disabled={saving}
+              />
+            </label>
+
+            {imageUrl.trim() && (
+              <img
+                src={normalizeUrl(imageUrl)}
+                alt="Restaurant preview"
+                className="ownerImagePreview"
+                onError={(e) => {
+                  e.currentTarget.style.display = "none";
+                }}
+              />
+            )}
+
+            <div className="hoursBlock">
+              <h3>Weekly Hours</h3>
+
+              {Object.entries(hours).map(([day, value]) => (
+                <div key={day} className="hoursRow">
+                  <div className="hoursDay">
+                    {day.charAt(0).toUpperCase() + day.slice(1)}
+                  </div>
+
+                  <label className="hoursClosed">
+                    <input
+                      type="checkbox"
+                      checked={value.closed}
+                      onChange={(e) =>
+                        handleHoursChange(day, "closed", e.target.checked)
+                      }
+                      disabled={saving}
+                    />
+                    Closed
+                  </label>
+
+                  <input
+                    type="time"
+                    value={value.open}
+                    onChange={(e) =>
+                      handleHoursChange(day, "open", e.target.value)
+                    }
+                    disabled={saving || value.closed}
+                  />
+
+                  <input
+                    type="time"
+                    value={value.close}
+                    onChange={(e) =>
+                      handleHoursChange(day, "close", e.target.value)
+                    }
+                    disabled={saving || value.closed}
+                  />
+                </div>
+              ))}
+            </div>
 
             <label>
               Price Level

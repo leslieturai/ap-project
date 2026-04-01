@@ -18,6 +18,26 @@ import {
 import { APIProvider, Map, AdvancedMarker } from "@vis.gl/react-google-maps";
 import MapMarker from "../MapMarker/mapMarker";
 
+const dayLabelMap = {
+  monday: "Monday",
+  tuesday: "Tuesday",
+  wednesday: "Wednesday",
+  thursday: "Thursday",
+  friday: "Friday",
+  saturday: "Saturday",
+  sunday: "Sunday",
+};
+
+const dayKeyByIndex = [
+  "sunday",
+  "monday",
+  "tuesday",
+  "wednesday",
+  "thursday",
+  "friday",
+  "saturday",
+];
+
 export default function Details() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -210,6 +230,60 @@ export default function Details() {
     return "Packed";
   }
 
+  function formatTime(timeValue) {
+    if (!timeValue) return "";
+    const [hourStr, minute] = timeValue.split(":");
+    let hour = Number(hourStr);
+    const ampm = hour >= 12 ? "PM" : "AM";
+    hour = hour % 12 || 12;
+    return `${hour}:${minute} ${ampm}`;
+  }
+
+  function toMinutes(timeValue) {
+    if (!timeValue || !timeValue.includes(":")) return null;
+    const [hourStr, minuteStr] = timeValue.split(":");
+    return Number(hourStr) * 60 + Number(minuteStr);
+  }
+
+  function getOpenStatus(hoursObj) {
+    if (!hoursObj || typeof hoursObj !== "object") {
+      return { label: "Hours unavailable", className: "statusUnknown" };
+    }
+
+    const now = new Date();
+    const todayKey = dayKeyByIndex[now.getDay()];
+    const todayHours = hoursObj[todayKey];
+
+    if (!todayHours || todayHours.closed) {
+      return { label: "Closed", className: "statusClosed" };
+    }
+
+    const openMinutes = toMinutes(todayHours.open);
+    const closeMinutes = toMinutes(todayHours.close);
+
+    if (openMinutes === null || closeMinutes === null) {
+      return { label: "Hours unavailable", className: "statusUnknown" };
+    }
+
+    const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
+    let isOpen = false;
+
+    if (closeMinutes > openMinutes) {
+      isOpen = currentMinutes >= openMinutes && currentMinutes < closeMinutes;
+    } else if (closeMinutes < openMinutes) {
+      isOpen = currentMinutes >= openMinutes || currentMinutes < closeMinutes;
+    } else {
+      isOpen = false;
+    }
+
+    if (isOpen) {
+      return { label: "Open Now", className: "statusOpen" };
+    }
+
+    return { label: "Closed", className: "statusClosed" };
+  }
+
   const events = useMemo(
     () => (Array.isArray(venue?.events) ? venue.events : []),
     [venue]
@@ -226,6 +300,8 @@ export default function Details() {
     return { lat, lng };
   }, [venue]);
 
+  const openStatus = getOpenStatus(venue?.hours);
+
   return (
     <>
       <Header />
@@ -234,7 +310,7 @@ export default function Details() {
         {loading ? (
           <p>Loading...</p>
         ) : err ? (
-          <section>
+          <section className="detailsCard">
             <p className="errorText">{err}</p>
             <button
               className="backBtn"
@@ -246,159 +322,242 @@ export default function Details() {
           </section>
         ) : (
           <>
-            <h1>{venue?.name || "Restaurant"}</h1>
+            <section className="detailsHeroCard">
+              <div className="detailsHeroContent">
+                <div className="detailsHeroText">
+                  <p className="detailsEyebrow">Restaurant</p>
+                  <h1>{venue?.name || "Restaurant"}</h1>
 
-            <section className="ratingSection">
-              <h3>Your Rating</h3>
-              <div className="ratingButtons">
-                {[1, 2, 3, 4, 5].map((num) => (
+                  <div className="detailsTopMeta">
+                    {venue?.foodCategory && (
+                      <span className="detailsPill">
+                        {venue.foodCategory.charAt(0).toUpperCase() +
+                          venue.foodCategory.slice(1)}
+                      </span>
+                    )}
+
+                    {venue?.priceLevel && (
+                      <span className="detailsPill pricePill">{venue.priceLevel}</span>
+                    )}
+
+                    {typeof venue?.rating === "number" && (
+                      <span className="detailsPill">
+                        {venue.rating}
+                        {venue?.ratingCount ? ` (${venue.ratingCount})` : ""}
+                      </span>
+                    )}
+
+                    <span className={`detailsPill openStatusPill ${openStatus.className}`}>
+                      {openStatus.label}
+                    </span>
+                  </div>
+
+                  {venue?.address && (
+                    <p className="detailsAddressLine">{venue.address}</p>
+                  )}
+                </div>
+
+                <div className="detailsTopActions">
                   <button
-                    key={num}
                     type="button"
-                    className={
-                      userRating === num
-                        ? "ratingBtn activeRating"
-                        : "ratingBtn"
-                    }
-                    onClick={() => handleRate(num)}
-                    disabled={ratingLoading}
+                    onClick={toggleFavorite}
+                    className="favoriteBtn"
                   >
-                    {num}★
+                    {isFavorite ? "★ Remove Favorite" : "☆ Add to Favorites"}
                   </button>
-                ))}
+
+                  <button
+                    type="button"
+                    onClick={handleShare}
+                    className="shareBtn"
+                  >
+                    Share
+                  </button>
+                </div>
               </div>
-            </section>
 
-            <div className="detailsTopActions">
-              <button
-                type="button"
-                onClick={toggleFavorite}
-                className="favoriteBtn"
-              >
-                {isFavorite ? "★ Remove Favorite" : "☆ Add to Favorites"}
-              </button>
-
-              <button
-                type="button"
-                onClick={handleShare}
-                className="shareBtn"
-              >
-                Share
-              </button>
-            </div>
-
-            <section id="venueDesc">
-              <h2>Address</h2>
-              <p>{venue?.address || "Address not provided."}</p>
-
-              {venue?.priceLevel && (
-                <p>
-                  <strong>Price:</strong>{" "}
-                  <span className="venuePCost">{venue.priceLevel}</span>
-                </p>
-              )}
-
-              {typeof venue?.rating === "number" && (
-                <p>
-                  <strong>Rating:</strong> {venue.rating}
-                  {venue?.ratingCount ? ` (${venue.ratingCount} ratings)` : ""}
-                </p>
+              {venue?.imageUrl && (
+                <img
+                  src={venue.imageUrl}
+                  alt={venue.name || "Restaurant"}
+                  className="detailsHeroImage"
+                  onError={(e) => {
+                    e.currentTarget.style.display = "none";
+                  }}
+                />
               )}
             </section>
 
-            {(venue?.about || venue?.offers) && (
-              <section>
-                <h2>More Info</h2>
+            <section className="detailsGridTwo">
+              <section className="detailsCard">
+                <h2>About</h2>
+                {venue?.about ? (
+                  <p>{venue.about}</p>
+                ) : (
+                  <p>No description available yet.</p>
+                )}
+              </section>
 
-                {venue?.about && (
+              <section className="detailsCard">
+                <h2>Contact</h2>
+
+                <p>
+                  <strong>Address:</strong> {venue?.address || "Not provided"}
+                </p>
+
+                {venue?.phone && (
                   <p>
-                    <strong>About:</strong> {venue.about}
+                    <strong>Phone:</strong> {venue.phone}
                   </p>
                 )}
 
-                {venue?.offers && (
+                {venue?.website && (
                   <p>
-                    <strong>Offers:</strong> {venue.offers}
+                    <strong>Website:</strong>{" "}
+                    <a href={venue.website} target="_blank" rel="noreferrer">
+                      Visit Website
+                    </a>
                   </p>
                 )}
               </section>
-            )}
+            </section>
 
-            <section id="mapSection">
-              <hr />
+            <section className="detailsGridTwo">
+              <section className="detailsCard">
+                <h2>Your Rating</h2>
+                <div className="ratingButtons">
+                  {[1, 2, 3, 4, 5].map((num) => (
+                    <button
+                      key={num}
+                      type="button"
+                      className={
+                        userRating === num
+                          ? "ratingBtn activeRating"
+                          : "ratingBtn"
+                      }
+                      onClick={() => handleRate(num)}
+                      disabled={ratingLoading}
+                    >
+                      {num}★
+                    </button>
+                  ))}
+                </div>
+              </section>
+
+              {venue?.hours &&
+                typeof venue.hours === "object" &&
+                !Array.isArray(venue.hours) && (
+                  <section className="detailsCard hoursDisplaySection">
+                    <div className="hoursHeaderRow">
+                      <h2>Hours</h2>
+                      <span className={`hoursStatusBadge ${openStatus.className}`}>
+                        {openStatus.label}
+                      </span>
+                    </div>
+
+                    <div className="hoursGrid">
+                      {Object.entries(venue.hours).map(([day, value]) => (
+                        <p key={day}>
+                          <strong>{dayLabelMap[day] || day}:</strong>{" "}
+                          {value?.closed
+                            ? "Closed"
+                            : value?.open && value?.close
+                            ? `${formatTime(value.open)} - ${formatTime(
+                                value.close
+                              )}`
+                            : "Not provided"}
+                        </p>
+                      ))}
+                    </div>
+                  </section>
+                )}
+            </section>
+
+            <section className="detailsCard">
+              <h2>Deals & Events</h2>
+
+              {venue?.offers && (
+                <p className="detailsIntroText">
+                  <strong>Offers:</strong> {venue.offers}
+                </p>
+              )}
+
+              <div className="detailsDealsGrid">
+                <div className="dealMiniCard">
+                  <h3>Happy Hour</h3>
+                  {venue?.hasHappyHour ? (
+                    <p>
+                      {venue?.happyHourDetails ||
+                        "Happy hour is available, but details were not added yet."}
+                    </p>
+                  ) : (
+                    <p>No happy hour listed.</p>
+                  )}
+                </div>
+
+                <div className="dealMiniCard">
+                  <h3>Daily Specials</h3>
+                  {venue?.hasDailySpecials ? (
+                    <p>
+                      {venue?.dailySpecialsDetails ||
+                        "Daily specials are available, but details were not added yet."}
+                    </p>
+                  ) : (
+                    <p>No daily specials listed.</p>
+                  )}
+                </div>
+              </div>
+
+              <div className="eventsBlock">
+                <h3>Events</h3>
+                {venue?.hasEvents ? (
+                  events.length === 0 ? (
+                    <p>Events are available, but none were added yet.</p>
+                  ) : (
+                    <ul className="detailsEventsList">
+                      {events.map((ev, idx) => (
+                        <li key={idx}>
+                          <strong>{ev.title || "Event"}</strong>
+                          {(ev.day || ev.time) && (
+                            <span>
+                              {" "}
+                              — {ev.day || "Day TBD"}
+                              {ev.time ? ` at ${ev.time}` : ""}
+                            </span>
+                          )}
+                          {ev.details && <div>{ev.details}</div>}
+                        </li>
+                      ))}
+                    </ul>
+                  )
+                ) : (
+                  <p>No events listed.</p>
+                )}
+              </div>
+            </section>
+
+            <section className="detailsCard" id="mapSection">
               <h2>Location</h2>
               <p>{venue?.address || "Address not provided."}</p>
 
-              <APIProvider apiKey="AIzaSyDy-6rkV4XH2UXvyubcwT3PLH9H-Hef0vI">
-                <Map
-                  defaultZoom={15}
-                  defaultCenter={mapCenter}
-                  mapId={"8e0468e996c5bdf3b9dbf482"}
-                  style={{
-                    width: "100%",
-                    height: "350px",
-                    borderRadius: "12px",
-                  }}
-                >
-                  <AdvancedMarker position={mapCenter}>
-                    <MapMarker frequency={busyAtRandom(1, 3)} />
-                  </AdvancedMarker>
-                </Map>
-              </APIProvider>
-
-              <hr />
-            </section>
-
-            <section id="offersSection">
-              <hr />
-              <h2>Deals & Events</h2>
-
-              <h3>Happy Hour</h3>
-              {venue?.hasHappyHour ? (
-                <p>
-                  {venue?.happyHourDetails ||
-                    "Happy hour is available, but details were not added yet."}
-                </p>
-              ) : (
-                <p>No happy hour listed.</p>
-              )}
-
-              <h3>Daily Specials</h3>
-              {venue?.hasDailySpecials ? (
-                <p>
-                  {venue?.dailySpecialsDetails ||
-                    "Daily specials are available, but details were not added yet."}
-                </p>
-              ) : (
-                <p>No daily specials listed.</p>
-              )}
-
-              <h3>Events</h3>
-              {venue?.hasEvents ? (
-                events.length === 0 ? (
-                  <p>Events are available, but none were added yet.</p>
-                ) : (
-                  <ul style={{ marginTop: "0.5rem" }}>
-                    {events.map((ev, idx) => (
-                      <li key={idx} style={{ marginBottom: "0.75rem" }}>
-                        <strong>{ev.title || "Event"}</strong>
-                        {(ev.day || ev.time) && (
-                          <span>
-                            {" "}
-                            — {ev.day || "Day TBD"}
-                            {ev.time ? ` at ${ev.time}` : ""}
-                          </span>
-                        )}
-                        {ev.details && <div>{ev.details}</div>}
-                      </li>
-                    ))}
-                  </ul>
-                )
-              ) : (
-                <p>No events listed.</p>
-              )}
-
-              <hr />
+              <div className="mapWrap">
+                <APIProvider apiKey="AIzaSyDy-6rkV4XH2UXvyubcwT3PLH9H-Hef0vI">
+                  <Map
+                    defaultZoom={15}
+                    defaultCenter={mapCenter}
+                    mapId={"8e0468e996c5bdf3b9dbf482"}
+                    style={{
+                      width: "100%",
+                      height: "350px",
+                      borderRadius: "12px",
+                    }}
+                  >
+                    <AdvancedMarker position={mapCenter}>
+                      <MapMarker frequency={busyAtRandom(1, 3)} />
+                    </AdvancedMarker>
+                  </Map>
+                </APIProvider>
+              </div>
             </section>
           </>
         )}

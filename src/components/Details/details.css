@@ -1,83 +1,160 @@
-
-
-hr {
-    height: 0.1rem;
-    background-color: black;
-    border: none;
-    width: 100%;
-
-    margin-top: 2%;
-    margin-bottom: 2%;
-}
-
 #detailSection {
-    display: flex;
-    flex-direction: column;
-    
-    margin: auto;
-    width: 80%;
-    height: 200vh !important;
-    
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+  width: 80%;
+  max-width: 1050px;
+  padding: 24px 0 40px;
 }
 
-#detailSection > h1 {
-    margin-top: 2%;
-} 
-
-#detailSection > section {
-    /* border: 1px solid black; */
-    width: 100%;
+.detailsHeroCard {
+  width: 100%;
+  background: linear-gradient(180deg, var(--card-bg), rgba(255, 122, 0, 0.03));
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  border-radius: 22px;
+  padding: 22px;
+  margin-bottom: 18px;
+  box-sizing: border-box;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.05);
 }
 
-
-.venueRankings {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+.detailsHeroContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
 }
 
-.venueName a {
-    font-weight: 600;
-    font-size: 1.1rem;
-    color: black;
+.detailsEyebrow {
+  margin: 0 0 0.35rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.82rem;
+  color: var(--muted-text);
+  font-weight: 700;
 }
 
-.venuePCost {
-    color: #1F9D05 !important;
-    font-weight: bold;
+.detailsHeroText h1 {
+  margin: 0;
+  font-size: 2.2rem;
+  line-height: 1.15;
 }
 
-
-.venueScore {
-    color: #FFE100;
+.detailsTopMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin-top: 0.9rem;
 }
 
-#mapSection {
-    height: 90vh;
+.detailsPill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.4rem 0.8rem;
+  border-radius: 999px;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  font-size: 0.9rem;
+  font-weight: 700;
 }
-.favoriteBtn {
-  margin: 1rem 0;
-  padding: 0.7rem 1rem;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
+
+.pricePill {
+  color: #1f9d05;
+}
+
+.openStatusPill,
+.hoursStatusBadge {
+  font-weight: 700;
+}
+
+.statusOpen {
+  background: rgba(40, 167, 69, 0.12);
+  color: #1f8f48;
+  border-color: rgba(40, 167, 69, 0.35);
+}
+
+.statusClosed {
+  background: rgba(220, 53, 69, 0.1);
+  color: #c53030;
+  border-color: rgba(220, 53, 69, 0.3);
+}
+
+.statusUnknown {
+  background: rgba(108, 117, 125, 0.12);
+  color: #5f6870;
+  border-color: rgba(108, 117, 125, 0.3);
+}
+
+.detailsAddressLine {
+  margin-top: 0.9rem;
+  color: var(--muted-text);
   font-size: 1rem;
 }
+
+.detailsHeroImage {
+  width: 100%;
+  max-width: 1000px;
+  height: 360px;
+  object-fit: cover;
+  border-radius: 18px;
+  border: 1px solid var(--border-color);
+  display: block;
+}
+
+.detailsGridTwo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.detailsCard {
+  width: 100%;
+  background: var(--card-bg);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  border-radius: 18px;
+  padding: 18px 20px;
+  box-sizing: border-box;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.04);
+}
+
+.detailsCard h2 {
+  margin-top: 0;
+  margin-bottom: 0.9rem;
+}
+
+.detailsCard h3 {
+  margin-top: 0;
+  margin-bottom: 0.45rem;
+}
+
 .detailsTopActions {
   display: flex;
-  gap: 1rem;
-  margin: 1rem 0;
+  gap: 0.75rem;
+  flex-wrap: wrap;
 }
+
 .favoriteBtn,
-.shareBtn {
-  padding: 0.7rem 1rem;
-  border: none;
-  border-radius: 8px;
+.shareBtn,
+.backBtn {
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
   cursor: pointer;
   font-size: 1rem;
+  background: var(--card-bg);
+  color: var(--text-color);
+  font-weight: 600;
 }
-.ratingSection {
-  margin: 1rem 0;
+
+.favoriteBtn:hover,
+.shareBtn:hover,
+.backBtn:hover {
+  opacity: 0.95;
 }
 
 .ratingButtons {
@@ -87,14 +164,125 @@ hr {
 }
 
 .ratingBtn {
-  padding: 0.5rem 0.8rem;
-  border: 1px solid #ccc;
-  border-radius: 8px;
+  padding: 0.65rem 0.95rem;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
   cursor: pointer;
-  background: white;
+  background: var(--card-bg);
+  color: var(--text-color);
+  font-weight: 600;
 }
 
 .activeRating {
   font-weight: 700;
-  border: 2px solid #222;
+  border: 2px solid #ff7a00;
+}
+
+.detailsCard a {
+  text-decoration: none;
+  color: var(--text-color);
+}
+
+.detailsCard a:hover {
+  text-decoration: underline;
+}
+
+.hoursHeaderRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.9rem;
+}
+
+.hoursHeaderRow h2 {
+  margin: 0;
+}
+
+.hoursStatusBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.42rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid var(--border-color);
+  font-size: 0.9rem;
+}
+
+.hoursGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.45rem 2rem;
+}
+
+.hoursGrid p {
+  margin: 0;
+}
+
+.detailsIntroText {
+  margin-bottom: 1rem;
+}
+
+.detailsDealsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.dealMiniCard {
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  padding: 14px;
+  background: rgba(255, 122, 0, 0.03);
+}
+
+.eventsBlock {
+  margin-top: 1rem;
+}
+
+.detailsEventsList {
+  margin: 0.5rem 0 0;
+  padding-left: 1.2rem;
+}
+
+.detailsEventsList li {
+  margin-bottom: 0.7rem;
+}
+
+#mapSection {
+  margin-top: 0;
+}
+
+.mapWrap {
+  margin-top: 0.8rem;
+}
+
+.venuePCost {
+  color: #1f9d05 !important;
+  font-weight: bold;
+}
+
+.errorText {
+  color: crimson;
+  font-weight: 700;
+}
+
+@media (max-width: 900px) {
+  #detailSection {
+    width: 90%;
+  }
+
+  .detailsGridTwo,
+  .detailsDealsGrid,
+  .hoursGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .detailsHeroText h1 {
+    font-size: 1.8rem;
+  }
+
+  .detailsHeroImage {
+    height: 240px;
+  }
 }

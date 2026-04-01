@@ -1,82 +1,88 @@
-
-
 #homeSection {
-    width: 80%;
-    margin: auto;
-    margin-top: 2%;
-}
-.venueGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 1rem;
-  margin-top: 1rem;
-}
-.filterRow {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  align-items: center;
-  margin: 1rem 0;
+  width: 80%;
+  max-width: 1200px;
+  margin: 2% auto 4%;
 }
 
-.searchInput {
-  padding: 0.6rem;
-  border-radius: 0.75rem;
-  border: 1px solid #ccc;
-  min-width: 220px;
+#homeSection h1 {
+  margin-bottom: 1rem;
 }
 
-.filterBtn {
-  padding: 0.55rem 0.8rem;
-  border-radius: 0.75rem;
-  border: none;
-  cursor: pointer;
-  background: rgb(182, 182, 182);
-  font-weight: bold;
-}
-
-.filterBtn.active {
-  background: black;
-  color: white;
-}
-
-.venueList {
-  
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-}
 .filterRow {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
-  margin: 1rem 0 1.5rem;
   align-items: center;
+  margin-bottom: 1.5rem;
 }
 
 .searchInput {
   padding: 0.8rem 1rem;
   border-radius: 999px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--border-color);
   min-width: 240px;
+  background: var(--card-bg);
+  color: var(--text-color);
+  box-sizing: border-box;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: #ff7a00;
+  box-shadow: 0 0 0 2px rgba(255, 122, 0, 0.2);
 }
 
 .filterBtn,
 .filterSelect {
   padding: 0.7rem 1rem;
   border-radius: 999px;
-  border: 1px solid #ccc;
-  background: white;
+  border: 1px solid var(--border-color);
+  background: var(--card-bg);
+  color: var(--text-color);
   cursor: pointer;
   font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.filterBtn:hover,
+.filterSelect:hover {
+  opacity: 0.95;
 }
 
 .filterBtn.active {
-  font-weight: 700;
-  border: 2px solid #222;
+  background: #ff7a00;
+  color: white;
+  border: none;
 }
 
-.filterSelect {
+.clearBtn {
+  color: var(--muted-text);
+  font-weight: 500;
+}
+
+.filterSelect:focus {
   outline: none;
+  border-color: #ff7a00;
+  box-shadow: 0 0 0 2px rgba(255, 122, 0, 0.2);
+}
+
+.venueList {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.2rem;
+}
+
+.errorText {
+  color: crimson;
+  font-weight: 700;
+}
+
+@media (max-width: 700px) {
+  #homeSection {
+    width: 90%;
+  }
+
+  .venueList {
+    grid-template-columns: 1fr;
+  }
 }

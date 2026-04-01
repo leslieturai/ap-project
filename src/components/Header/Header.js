@@ -1,14 +1,15 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 
 import { auth, db } from "../../firebase";
-import HeaderNav from "../HeaderNav/headerNav";
+import { useTheme } from "../../context/ThemeContext";
 import "./header.css";
 
 export default function Header() {
   const navigate = useNavigate();
+  const { theme, toggleTheme } = useTheme();
 
   const [user, setUser] = useState(null);
   const [role, setRole] = useState("");
@@ -40,37 +41,76 @@ export default function Header() {
   }, []);
 
   async function handleLogout() {
-    await signOut(auth);
-    navigate("/sign-up-in");
+    try {
+      await signOut(auth);
+      navigate("/sign-up-in");
+    } catch (error) {
+      console.error("Logout failed:", error);
+      alert("Logout failed. Please try again.");
+    }
   }
 
   return (
     <header id="page-header">
-      <Link id="logo" to="/city-select">EvoEats</Link>
+      <div className="headerTopRow">
+        <div className="headerLeft">
+          <Link id="logo" to="/">
+            EvoEats
+          </Link>
+        </div>
 
-      <section id="header-auth">
-        {!user ? (
-          <>
-            <Link to="/sign-up-in">Sign-up</Link>
-            <Link to="/sign-up-in">Login</Link>
-            <Link to="/sign-up-in">Register your business</Link>
-          </>
-        ) : (
-          <>
-            <Link to="/favorites">⭐ Favorites</Link>
+        <div className="headerRight">
+          <button
+            type="button"
+            onClick={toggleTheme}
+            className="headerBtn themeToggleBtn"
+          >
+            {theme === "light" ? "🌙 Dark Mode" : "☀️ Light Mode"}
+          </button>
 
-            {role === "owner" && (
-              <Link to="/owner-page">Owner Portal</Link>
-            )}
+          {!user ? (
+            <>
+              <Link className="headerLinkBtn" to="/sign-up-in">
+                Sign-up
+              </Link>
+              <Link className="headerLinkBtn" to="/sign-up-in">
+                Login
+              </Link>
+            
+            </>
+          ) : (
+            <>
+              <Link className="headerLinkBtn" to="/favorites">
+                ⭐ Favorites
+              </Link>
 
-            <button type="button" onClick={handleLogout}>
-              Logout
-            </button>
-          </>
-        )}
-      </section>
+              {role === "owner" && (
+                <Link className="headerLinkBtn" to="/owner-page">
+                  Owner Portal
+                </Link>
+              )}
 
-      <HeaderNav />
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="headerBtn logoutBtn"
+              >
+                Logout
+              </button>
+            </>
+          )}
+        </div>
+      </div>
+
+      <nav className="headerBottomRow">
+        <NavLink to="/" end className={({ isActive }) => isActive ? "mainNavLink active" : "mainNavLink"}>
+          Home
+        </NavLink>
+
+        <NavLink to="/deals" className={({ isActive }) => isActive ? "mainNavLink active" : "mainNavLink"}>
+          Events & Deals
+        </NavLink>
+      </nav>
     </header>
   );
 }
