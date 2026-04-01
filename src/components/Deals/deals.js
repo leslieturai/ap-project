@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "../Header/Header";
 import "./deals.css";
 
@@ -6,15 +7,22 @@ import { db } from "../../firebase";
 import { collection, getDocs, query, where } from "firebase/firestore";
 
 const DAYS = [
-  "Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+  "Sunday",
 ];
 
 export default function Deals() {
+  const navigate = useNavigate();
+
   const [venues, setVenues] = useState([]);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState("");
 
-  // filters
   const [day, setDay] = useState("All");
   const [showEvents, setShowEvents] = useState(true);
   const [showHappyHour, setShowHappyHour] = useState(true);
@@ -44,81 +52,49 @@ export default function Deals() {
     load();
   }, []);
 
-  const items = useMemo(() => {
-    const list = [];
-
-    for (const v of venues) {
-      const name = v.name || "";
-      const address = v.address || "";
-
-      // Happy hour item
-      if (v.hasHappyHour && v.happyHourDetails) {
-        list.push({
-          type: "Happy Hour",
-          venueId: v.id,
-          venueName: name,
-          address,
-          day: "All", 
-          title: "Happy Hour",
-          time: "",
-          details: v.happyHourDetails,
-        });
-      }
-
-      // Daily specials item
-      if (v.hasDailySpecials && v.dailySpecialsDetails) {
-        list.push({
-          type: "Daily Specials",
-          venueId: v.id,
-          venueName: name,
-          address,
-          day: "All",
-          title: "Daily Specials",
-          time: "",
-          details: v.dailySpecialsDetails,
-        });
-      }
-
-      // Events items
-      if (v.hasEvents && Array.isArray(v.events)) {
-        for (const ev of v.events) {
-          list.push({
-            type: "Event",
-            venueId: v.id,
-            venueName: name,
-            address,
-            day: ev?.day || "All",
-            title: ev?.title || "Event",
-            time: ev?.time || "",
-            details: ev?.details || "",
-          });
-        }
-      }
-    }
-
-    return list;
-  }, [venues]);
-
-  const filtered = useMemo(() => {
+  const filteredVenues = useMemo(() => {
     const s = search.trim().toLowerCase();
 
-    return items.filter((it) => {
-      if (!showEvents && it.type === "Event") return false;
-      if (!showHappyHour && it.type === "Happy Hour") return false;
-      if (!showSpecials && it.type === "Daily Specials") return false;
+    return venues.filter((venue) => {
+      const name = venue?.name || "";
+      const address = venue?.address || "";
 
-      if (day !== "All") {
-        if (it.day !== "All" && it.day !== day) return false;
+      const hasMatchingHappyHour =
+        showHappyHour && venue?.hasHappyHour && !!venue?.happyHourDetails;
+
+      const hasMatchingSpecials =
+        showSpecials && venue?.hasDailySpecials && !!venue?.dailySpecialsDetails;
+
+      const venueEvents = Array.isArray(venue?.events) ? venue.events : [];
+
+      const matchingEvents =
+        showEvents
+          ? venueEvents.filter((ev) => {
+              if (day === "All") return true;
+              return (ev?.day || "All") === day;
+            })
+          : [];
+
+      const hasMatchingEvents = matchingEvents.length > 0;
+
+      if (!hasMatchingHappyHour && !hasMatchingSpecials && !hasMatchingEvents) {
+        return false;
       }
 
       if (s) {
-        const hay = `${it.venueName} ${it.title}`.toLowerCase();
+        const eventText = venueEvents
+          .map((ev) => `${ev?.title || ""} ${ev?.details || ""}`)
+          .join(" ")
+          .toLowerCase();
+
+        const hay = `${name} ${address} ${venue?.happyHourDetails || ""} ${venue?.dailySpecialsDetails || ""} ${eventText}`.toLowerCase();
+
         if (!hay.includes(s)) return false;
       }
 
       return true;
     });
-  }, [items, day, showEvents, showHappyHour, showSpecials, search]);
+  }, [venues, day, showEvents, showHappyHour, showSpecials, search]);
 
   function clearFilters() {
     setDay("All");
@@ -126,6 +102,17 @@ export default function Deals() {
     setShowHappyHour(true);
     setShowSpecials(true);
     setSearch("");
+  }
+
+  function handleCardClick(venueId) {
+    navigate(`/details/${venueId}`);
+  }
+
+  function handleCardKeyDown(e, venueId) {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      navigate(`/details/${venueId}`);
+    }
   }
 
   return (
@@ -151,7 +138,9 @@ export default function Deals() {
           >
             <option value="All">All days</option>
             {DAYS.map((d) => (
-              <option key={d} value={d}>{d}</option>
+              <option key={d} value={d}>
+                {d}
+              </option>
             ))}
           </select>
 
@@ -179,7 +168,11 @@ export default function Deals() {
             Daily Specials
           </button>
 
-          <button type="button" className="filterBtn" onClick={clearFilters}>
+          <button
+            type="button"
+            className="filterBtn clearBtn"
+            onClick={clearFilters}
+          >
             Clear
           </button>
         </div>
@@ -188,28 +181,104 @@ export default function Deals() {
           <p>Loading...</p>
         ) : err ? (
           <p className="errorText">{err}</p>
-        ) : filtered.length === 0 ? (
+        ) : filteredVenues.length === 0 ? (
           <p>No matches.</p>
         ) : (
-          <div className="dealsList">
-            {filtered.map((it, idx) => (
-              <div className="dealCard" key={`${it.venueId}-${it.type}-${idx}`}>
-                <div className="dealTop">
-                  <span className="dealTag">{it.type}</span>
-                  {it.day && <span className="dealDay">{it.day}</span>}
-                  {it.time && <span className="dealTime">{it.time}</span>}
+          <div className="dealGrid">
+            {filteredVenues.map((venue) => {
+              const matchingEvents =
+                showEvents && Array.isArray(venue?.events)
+                  ? venue.events.filter((ev) => {
+                      if (day === "All") return true;
+                      return (ev?.day || "All") === day;
+                    })
+                  : [];
+
+              return (
+                <div
+                  className="venueDealsCard clickableCard"
+                  key={venue.id}
+                  onClick={() => handleCardClick(venue.id)}
+                  onKeyDown={(e) => handleCardKeyDown(e, venue.id)}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`Open ${venue.name}`}
+                >
+                  <div className="venueDealsHeader">
+                    <div>
+                      <h2 className="venueDealsTitle">{venue.name}</h2>
+                      {venue.address && (
+                        <p className="venueDealsAddress">{venue.address}</p>
+                      )}
+                    </div>
+
+                    <div className="venueDealsBadges">
+                      {showHappyHour &&
+                        venue?.hasHappyHour &&
+                        venue?.happyHourDetails && (
+                          <span className="dealTag happyTag">Happy Hour</span>
+                        )}
+
+                      {showSpecials &&
+                        venue?.hasDailySpecials &&
+                        venue?.dailySpecialsDetails && (
+                          <span className="dealTag specialTag">Daily Specials</span>
+                        )}
+
+                      {showEvents && matchingEvents.length > 0 && (
+                        <span className="dealTag dealsEventTag">
+                          {matchingEvents.length} Event
+                          {matchingEvents.length > 1 ? "s" : ""}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="venueDealsBody">
+                    {showHappyHour &&
+                      venue?.hasHappyHour &&
+                      venue?.happyHourDetails && (
+                        <div className="dealSectionBlock">
+                          <h3>Happy Hour</h3>
+                          <p>{venue.happyHourDetails}</p>
+                        </div>
+                      )}
+
+                    {showSpecials &&
+                      venue?.hasDailySpecials &&
+                      venue?.dailySpecialsDetails && (
+                        <div className="dealSectionBlock">
+                          <h3>Daily Specials</h3>
+                          <p>{venue.dailySpecialsDetails}</p>
+                        </div>
+                      )}
+
+                    {showEvents && matchingEvents.length > 0 && (
+                      <div className="dealSectionBlock">
+                        <h3>Events</h3>
+                        <ul className="venueEventsList">
+                          {matchingEvents.map((ev, idx) => (
+                            <li key={idx}>
+                              <strong>{ev?.title || "Event"}</strong>
+                              {(ev?.day || ev?.time) && (
+                                <span>
+                                  {" "}
+                                  — {ev?.day || "Day TBD"}
+                                  {ev?.time ? ` at ${ev.time}` : ""}
+                                </span>
+                              )}
+                              {ev?.details && <div>{ev.details}</div>}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="venueDealsFooter">View restaurant →</div>
                 </div>
-
-                <h3 className="dealTitle">{it.title}</h3>
-
-                <p className="dealVenue">
-                  <strong>{it.venueName}</strong>
-                  {it.address ? ` — ${it.address}` : ""}
-                </p>
-
-                {it.details && <p className="dealDetails">{it.details}</p>}
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </section>

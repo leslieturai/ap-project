@@ -37,6 +37,7 @@ export default function SignUpIn() {
     if (code === "auth/email-already-in-use") return "Email already in use.";
     if (code === "auth/user-not-found") return "No account found with that email.";
     if (code === "auth/wrong-password") return "Incorrect password.";
+    if (code === "auth/invalid-credential") return "Incorrect email or password.";
     return e?.message || "Something went wrong.";
   }
 
@@ -113,98 +114,108 @@ export default function SignUpIn() {
     <>
       <Header />
 
-      <section id="authSection">
-        <div className="auth-container">
-          <h1>{mode === "login" ? "Login" : "Sign Up"}</h1>
+      <section className="authPage">
+        <section id="authSection">
+          <div className="auth-container">
+            <div className="authHeading">
+              <h1>{mode === "login" ? "Welcome Back" : "Create Your Account"}</h1>
+              <p>
+                {mode === "login"
+                  ? "Login to browse restaurants, deals, and events."
+                  : "Sign up to start discovering restaurants near you."}
+              </p>
+            </div>
 
-          <div className="auth-toggle">
-            <button
-              className={mode === "login" ? "active" : ""}
-              onClick={() => setMode("login")}
-              disabled={loading}
-              type="button"
-            >
-              Login
-            </button>
-
-            <button
-              className={mode === "signup" ? "active" : ""}
-              onClick={() => setMode("signup")}
-              disabled={loading}
-              type="button"
-            >
-              Sign Up
-            </button>
-          </div>
-
-          <div className="auth-role">
-            <p className="auth-role-title"></p>
-
-            <div className="auth-role-buttons">
+            <div className="auth-toggle">
               <button
-                className={accountType === "customer" ? "active" : ""}
-                onClick={() => setAccountType("customer")}
+                className={mode === "login" ? "active" : ""}
+                onClick={() => setMode("login")}
                 disabled={loading}
                 type="button"
               >
-                Customer
+                Login
               </button>
 
               <button
-                className={accountType === "owner" ? "active" : ""}
-                onClick={() => setAccountType("owner")}
+                className={mode === "signup" ? "active" : ""}
+                onClick={() => setMode("signup")}
                 disabled={loading}
                 type="button"
               >
-                Business
+                Sign Up
               </button>
             </div>
+
+            {mode === "signup" && (
+              <div className="auth-role">
+                <p className="auth-role-title">Choose account type</p>
+
+                <div className="auth-role-buttons">
+                  <button
+                    className={accountType === "customer" ? "active" : ""}
+                    onClick={() => setAccountType("customer")}
+                    disabled={loading}
+                    type="button"
+                  >
+                    Customer
+                  </button>
+
+                  <button
+                    className={accountType === "owner" ? "active" : ""}
+                    onClick={() => setAccountType("owner")}
+                    disabled={loading}
+                    type="button"
+                  >
+                    Business
+                  </button>
+                </div>
+              </div>
+            )}
+
+            <div className="authFields">
+              <input
+                type="email"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={loading}
+              />
+
+              <input
+                type="password"
+                placeholder={mode === "signup" ? "Password (6+ chars)" : "Password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                disabled={loading}
+              />
+            </div>
+
+            <button
+              className="primary-btn"
+              onClick={handleContinue}
+              disabled={loading}
+              type="button"
+            >
+              {loading
+                ? "Working..."
+                : mode === "login"
+                ? "Continue"
+                : "Create Account"}
+            </button>
+
+            <button
+              className="reset-btn"
+              onClick={handleResetPassword}
+              disabled={loading}
+              type="button"
+            >
+              Forgot / Reset Password
+            </button>
+
+            {err && <p className="auth-error">{err}</p>}
+            {msg && <p className="auth-success">{msg}</p>}
           </div>
-
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            disabled={loading}
-          />
-
-          <input
-            type="password"
-            placeholder="Password (6+ chars)"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            disabled={loading}
-          />
-
-          <button
-            className="primary-btn"
-            onClick={handleContinue}
-            disabled={loading}
-            type="button"
-          >
-            {loading ? "Working..." : "Continue"}
-          </button>
-
-          <button
-            className="reset-btn"
-            onClick={handleResetPassword}
-            disabled={loading}
-            type="button"
-          >
-            Forgot / Reset Password
-          </button>
-
-          {err && <p className="auth-error">{err}</p>}
-          {msg && <p className="auth-success">{msg}</p>}
-
-          <hr />
-
-          <section id="preAuthSection">
-            <a href="#google">Google</a>
-            <a href="#apple">Apple</a>
-          </section>
-        </div>
+        </section>
       </section>
     </>
   );

@@ -6,52 +6,89 @@ function renderStars(rating) {
   return "★".repeat(safeRating) + "☆".repeat(5 - safeRating);
 }
 
+function formatCategory(category) {
+  if (!category) return "";
+  return category.charAt(0).toUpperCase() + category.slice(1);
+}
+
+function buildQuickBadges(venue) {
+  const badges = [];
+
+  if (venue?.hasHappyHour) badges.push("Happy Hour");
+  if (venue?.hasDailySpecials) badges.push("Daily Specials");
+  if (venue?.hasEvents) badges.push("Events");
+
+  return badges;
+}
+
+function formatEventTag(tag) {
+  if (!tag) return "";
+  return tag.replace("-", " ");
+}
+
 export default function VenueCard({ venue }) {
   if (!venue) return null;
 
+  const quickBadges = buildQuickBadges(venue);
+  const eventTags = Array.isArray(venue?.eventTags) ? venue.eventTags.slice(0, 2) : [];
+
   return (
-    <div className="venueCard">
-      <Link className="venueName" to={`/details/${venue.id}`}>
-        {venue.name}
-      </Link>
-
-      <p className="venueAddress">{venue.address}</p>
-
-      {Number.isFinite(venue?.distanceKm) && (
-        <p className="venueDistance">{venue.distanceKm.toFixed(1)} km away</p>
+    <Link className="venueCard" to={`/details/${venue.id}`}>
+      {venue?.imageUrl && (
+        <img
+          src={venue.imageUrl}
+          alt={venue.name || "Restaurant"}
+          className="venueCardImage"
+          onError={(e) => {
+            e.currentTarget.style.display = "none";
+          }}
+        />
       )}
 
-      {venue?.foodCategory && (
-        <p className="venueCategory">
-          {venue.foodCategory.charAt(0).toUpperCase() + venue.foodCategory.slice(1)}
-        </p>
-      )}
+      <div className="venueCardBody">
+        <h3 className="venueName">{venue.name}</h3>
 
-      <p className="venueRating">
-        {renderStars(venue.rating)}{" "}
-        <span className="ratingNumber">({Number(venue.rating || 0).toFixed(1)})</span>
-      </p>
+        <p className="venueAddress">{venue.address}</p>
 
-      {Array.isArray(venue?.eventTags) && venue.eventTags.length > 0 && (
-        <div className="eventTagRow">
-          {venue.eventTags.map((tag) => (
-            <span key={tag} className="eventTag">
-              {tag.replace("-", " ")}
-            </span>
-          ))}
+        {Number.isFinite(venue?.distanceKm) && (
+          <p className="venueDistance">{venue.distanceKm.toFixed(1)} km away</p>
+        )}
+
+        <div className="venueMetaRow">
+          {venue?.foodCategory && (
+            <span className="venueMetaItem">{formatCategory(venue.foodCategory)}</span>
+          )}
+
+          {venue?.priceLevel && (
+            <span className="venueCost">{venue.priceLevel}</span>
+          )}
         </div>
-      )}
 
-      <hr />
+        <p className="venueRating">
+          {renderStars(venue.rating)}{" "}
+          <span className="ratingNumber">({Number(venue.rating || 0).toFixed(1)})</span>
+        </p>
 
-      <div className="venueTags">
-        <ul>
-          <li>{venue.hasHappyHour ? "Happy Hour" : "No happy hour"}</li>
-          <li>{venue.hasDailySpecials ? "Daily Specials" : "No daily specials"}</li>
-          <li>{venue.hasEvents ? "Hosts Events" : "No events"}</li>
-          <li className="venueCost">{venue.priceLevel}</li>
-        </ul>
+        {(quickBadges.length > 0 || eventTags.length > 0) && (
+          <div className="badgeWrap">
+            {quickBadges.map((badge) => (
+              <span key={badge} className="quickBadge">
+                {badge}
+              </span>
+            ))}
+
+            {eventTags.map((tag) => (
+              <span key={tag} className="eventTag">
+                {formatEventTag(tag)}
+              </span>
+            ))}
+          </div>
+        )}
+
+        <div className="venueCardFooter">
+          <span className="viewDetailsText">View details →</span>
+        </div>
       </div>
-    </div>
+    </Link>
   );
 }

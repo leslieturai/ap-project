@@ -47,7 +47,6 @@ export default function Favorites() {
 
   async function removeFavorite(restaurantId) {
     const user = auth.currentUser;
-
     if (!user) return;
 
     try {
@@ -64,30 +63,53 @@ export default function Favorites() {
       <Header />
 
       <section className="favoritesPage">
-        <h1>My Favorites</h1>
+        <div className="favoritesHeading">
+          <h1>My Favorites</h1>
+          <p>Quickly jump back to restaurants you’ve saved.</p>
+        </div>
 
         {loading ? (
-          <p>Loading favorites...</p>
+          <div className="favoritesStateCard">
+            <p>Loading favorites...</p>
+          </div>
         ) : err ? (
-          <div>
-            <p>{err}</p>
-            <button onClick={() => navigate("/")}>Back to Home</button>
+          <div className="favoritesStateCard">
+            <p className="favoritesError">{err}</p>
+            <button className="favoritesBackBtn" onClick={() => navigate("/")}>
+              Back to Home
+            </button>
           </div>
         ) : favorites.length === 0 ? (
-          <p>No favorites saved yet.</p>
+          <div className="favoritesStateCard">
+            <h2>No favorites yet</h2>
+            <p>Save restaurants from their details page to see them here.</p>
+            <button className="favoritesBackBtn" onClick={() => navigate("/")}>
+              Browse Restaurants
+            </button>
+          </div>
         ) : (
-          <div className="favoritesList">
+          <div className="favoritesGrid">
             {favorites.map((fav) => (
               <div key={fav.id} className="favoriteCard">
-                <h2>{fav.name || "Restaurant"}</h2>
-                <p>{fav.address || "No address available."}</p>
+                <div className="favoriteCardBody">
+                  <h2>{fav.name || "Restaurant"}</h2>
+                  <p className="favoriteAddress">
+                    {fav.address || "No address available."}
+                  </p>
+                </div>
 
                 <div className="favoriteActions">
-                  <Link to={`/details/${fav.restaurantId || fav.id}`}>
+                  <Link
+                    className="favoriteLinkBtn"
+                    to={`/details/${fav.restaurantId || fav.id}`}
+                  >
                     View Details
                   </Link>
 
-                  <button onClick={() => removeFavorite(fav.id)}>
+                  <button
+                    className="favoriteRemoveBtn"
+                    onClick={() => removeFavorite(fav.id)}
+                  >
                     Remove
                   </button>
                 </div>
