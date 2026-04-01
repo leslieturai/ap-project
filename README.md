@@ -1,94 +1,236 @@
-Local Events & Deals App
+# 🍽️ EvoEats
 
-A web application that allows users to discover restaurants in their city, view happy hours, daily specials, and events, and allows restaurant owners to manage their venue information.
+## 📌 Project Overview
 
-📌 Project Overview
+EvoEats is a React + Firebase web application that helps users discover restaurants, daily specials, happy hours, and events happening in their city.
 
-This application was built as part of a multi-sprint development project.
+The app allows:
 
-The goal of Sprint 1 was to deliver a working MVP (Minimum Viable Product) that includes:
+* Users to browse restaurants and find deals happening **today**
+* Filter by **happy hour, specials, and events (live music, trivia)**
+* Save favorite restaurants
+* Leave ratings and reviews
+* Restaurant owners to manage their listings and promotions
 
-User authentication (customers & business owners)
+---
 
-Restaurant browsing and filtering
+## 🎯 Project Goal
 
-Restaurant detail pages
+The goal of EvoEats is to make it easy for users to answer one simple question:
 
-Events & deals viewing
+👉 **“Where should I go tonight?”**
 
-Owner restaurant management (create, edit, delete)
+At the same time, it helps restaurants increase traffic by promoting time-sensitive deals and events.
 
-🚀 Features (Sprint 1)
-👤 User Features
-✅ Authentication
+---
 
-Sign up (Customer or Business)
+## 🧠 Key Features
 
-Log in
+### 👤 User Features
 
-Log out
+* Sign up / Login (Firebase Authentication)
+* Browse restaurants by city
+* View restaurant details
+* Filter by:
 
-Reset password
+  * Happy Hour
+  * Daily Specials
+  * Events (Live Music, Trivia)
+* Save favorites ❤️
+* Leave ratings ⭐
+* Write reviews 💬
 
-Role-based redirect after login
+---
 
-✅ Browse Restaurants
+### 🧑‍💼 Restaurant Owner Features
 
-View Calgary restaurants
+* Create restaurant listings
+* Edit restaurant details
+* Add:
 
-Search by name
+  * Happy hours
+  * Daily specials
+  * Events
 
-Filter by:
+---
 
-Happy Hour
+### ⭐ Sprint 3 Features (Final Polish)
 
-Daily Specials
+* Reviews and ratings system
+* Restaurant contact info (phone + hours)
+* User profile updates
+* Change city feature
+* Dark mode 🌙
+* Upload restaurant image/logo
+* Loading and empty states
 
-Events
+---
 
-Clear filters
+## 🧱 Tech Stack
 
-✅ Restaurant Details
+### Frontend
 
-Each restaurant page shows:
+* React
+* React Router
+* CSS Modules
 
-Name
+### Backend
 
-Address
+* Firebase Authentication
+* Firestore Database
 
-About section
+### APIs
 
-Offers
+* Google Maps API (@vis.gl/react-google-maps)
 
-Rating
+---
 
-Price level
+## 🗂️ Database Structure (Firestore)
 
-Happy hour details
+### Users
 
-Daily specials details
+users/{uid}
 
-Event listings (if available)
+```
+{
+  role: "customer" | "owner",
+  cityId: "calgary",
+  createdAt: timestamp
+}
+```
 
-✅ Events & Deals Page
+### Restaurants
 
-Dedicated tab for viewing:
+restaurants/{restaurantId}
 
-Restaurants with events
+```
+{
+  name,
+  address,
+  cityId,
+  phone,
+  hours,
+  ownerUid,
+  rating,
+  ratingCount,
+  hasLiveMusic,
+  hasTriviaNight,
+  createdAt
+}
+```
 
-Restaurants with happy hours
+### Reviews
 
-Restaurants with daily specials
+restaurants/{restaurantId}/reviews/{userId}
 
-🏢 Business Owner Features
-✅ Owner Dashboard
+```
+{
+  review,
+  rating,
+  userEmail,
+  createdAt
+}
+```
 
-Secure access (role-based)
+### Ratings
 
-Create new restaurant
+restaurants/{restaurantId}/ratings/{userId}
 
-View owned restaurants
+```
+{
+  rating,
+  createdAt
+}
+```
 
-Edit restaurant profile
+### Favorites
 
-Delete restaurant
+users/{userId}/favorites/{restaurantId}
+
+```
+{
+  restaurantId,
+  name,
+  address,
+  createdAt
+}
+```
+
+---
+
+## 🔐 Authentication & Roles
+
+* Users sign up as:
+
+  * Customer
+  * Restaurant Owner
+* Role-based routing:
+
+  * Customers → Browse restaurants
+  * Owners → Manage listings
+
+---
+
+## 🧭 Routing Structure
+
+* `/` → Home
+* `/sign-up-in` → Login / Signup
+* `/city-select` → Choose city
+* `/details/:id` → Restaurant details
+* `/favorites` → Saved restaurants
+* `/owner-page` → Owner dashboard
+* `/owner-details/:id` → Edit restaurant
+
+---
+
+## 🚀 How to Run the Project
+
+### 1. Clone the repository
+
+```
+git clone <your-repo-url>
+cd ap-project
+```
+
+### 2. Install dependencies
+
+```
+npm install
+```
+
+### 3. Start the app
+
+```
+npm start
+```
+
+---
+
+## 🔥 Future Improvements
+
+* Notifications for new deals
+* “Live Tonight” feature
+* Advanced filtering
+* Mobile optimization
+
+---
+
+## 🧪 Project Status
+
+✅ Sprint 1: Complete
+✅ Sprint 2: Complete
+✅ Sprint 3: Final polish complete
+
+---
+
+## 💡 What Makes EvoEats Unique?
+
+* Focuses on **real-time deals**, not static menus
+* Combines features from:
+
+  * Google Maps
+  * Instagram
+  * Facebook Events
+* Helps both **users AND businesses**
+
+
