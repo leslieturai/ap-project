@@ -23,8 +23,10 @@ function App() {
         apiKey={"AIzaSyDy-6rkV4XH2UXvyubcwT3PLH9H-Hef0vI"}
         onLoad={() => console.log("Maps API has loaded.")}
       >
-        <BrowserRouter>
+        {/* Remove basename to test it locally */}
+        <BrowserRouter basename="/ap-project">
           <Routes>
+
             <Route path="/sign-up-in" element={<SignUpIn />} />
 
             <Route
